@@ -19,8 +19,9 @@ To install a server on a [Vultr VPS](https://vultr.com), add this boot script to
 ```sh
 #!/bin/bash
 
-apt-get update && apt-get -y install curl
-curl https://raw.githubusercontent.com/eldoy/waveorb-server/master/install.sh | sh
+apt-get update && apt-get -y install wget
+wget https://raw.githubusercontent.com/eldoy/waveorb-server/master/install.sh
+cat ./install.sh | sh
 ```
 
 Add your SSH key there too.

@@ -32,9 +32,9 @@ chsh -s /usr/bin/zsh root
 
 # Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
-echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc
+echo 'export NVM_DIR="$HOME/.nvm"' >> /root/.zshrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /root/.zshrc
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /root/.zshrc
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -54,24 +54,23 @@ until apt install -y nginx python-certbot-nginx; do sleep 1; done
 # nginx-module-geoip nginx-module-image-filter nginx-module-njs nginx-module-perl nginx-module-xslt
 
 # Install brotli
+until apt install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
+
 wget https://nginx.org/download/nginx-1.19.7.tar.gz
 tar zxvf nginx-1.19.7.tar.gz
 rm nginx-1.19.7.tar.gz
 
 git clone https://github.com/google/ngx_brotli.git
 cd ngx_brotli && git submodule update --init
-cd ~/nginx-1.19.7
-
-until apt install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
-
+cd /root/nginx-1.19.7
 ./configure --with-compat --add-dynamic-module=../ngx_brotli
 make modules
 cp objs/*.so /etc/nginx/modules
 chmod 644 /etc/nginx/modules/*.so
 
-cd ~
-rm -rf ~/ngx_brotli
-rm -rf ~/nginx-1.19.7
+cd /root
+rm -rf /root/ngx_brotli
+rm -rf /root/nginx-1.19.7
 
 # Start nginx
 systemctl enable nginx
