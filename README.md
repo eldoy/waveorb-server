@@ -2,29 +2,25 @@
 
 Contains a boot script to install all the software needed to run Waveorb apps.
 
-Features:
+Includes:
 
 * NodeJS
 * NGINX Loadbalancer
 * Certbot Let's Encrypt SSL
-* MongoDB
-* Firewall
 * Public Key authentication (no password)
+* Firewall
 
 Made for [the Waveorb Web App Development Framework.](https://waveorb.com)
 
 ### Setup
 
-To install a server on a [Vultr VPS](https://vultr.com), add this boot script to your account:
-```sh
-#!/bin/bash
+Create a server on for example [Vultr VPS](https://vultr.com). Add your SSH key there so you can ssh to it without a password.
 
-apt-get update && apt-get -y install curl
+Choose Debian 10 as operating system. Once it's running, log in to your server and run this command:
+```sh
 curl https://raw.githubusercontent.com/eldoy/waveorb-server/master/install.sh | sh
 ```
 
-Add your SSH key there too.
-
-When all is done, use the Waveorb app to create your server and deploy your waveorb apps.
+When all is done your are ready to deploy your waveorb application.
 
 MIT Licensed. Enjoy!
