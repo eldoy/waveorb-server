@@ -42,7 +42,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # Install NodeJS
 nvm install --lts
-nvm use --lts
 
 # Install nginx package
 wget https://nginx.org/keys/nginx_signing.key
