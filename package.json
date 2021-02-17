@@ -1,0 +1,18 @@
+{
+  "name": "waveorb-server",
+  "version": "0.1.0",
+  "description": "Waveorb server",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/eldoy/waveorb-server"
+  },
+  "author": "Vidar Eldøy <vidar@eldoy.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
