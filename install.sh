@@ -38,6 +38,7 @@ echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.
 
 # Install NodeJS
 nvm install --lts
+nvm use --lts
 
 # Install nginx package
 wget https://nginx.org/keys/nginx_signing.key
