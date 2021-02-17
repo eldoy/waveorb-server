@@ -26,15 +26,15 @@ until apt install -y build-essential rsync certbot ufw gnupg2 git zsh vim wget; 
 
 # Install zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --unattended"
-sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="norm"/g' /root/.zshrc
-sed -i '/DISABLE_AUTO_UPDATE/s/^# //g' /root/.zshrc
+sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="norm"/g' $HOME/.zshrc
+sed -i '/DISABLE_AUTO_UPDATE/s/^# //g' $HOME/.zshrc
 chsh -s /usr/bin/zsh root
 
 # Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-echo 'export NVM_DIR="$HOME/.nvm"' >> /root/.zshrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /root/.zshrc
-echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /root/.zshrc
+echo 'export NVM_DIR="$HOME/.nvm"' >> $HOME/.zshrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $HOME/.zshrc
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $HOME/.zshrc
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -61,16 +61,16 @@ tar zxvf nginx-1.19.7.tar.gz
 rm nginx-1.19.7.tar.gz
 
 git clone https://github.com/google/ngx_brotli.git
-cd ngx_brotli && git submodule update --init
-cd /root/nginx-1.19.7
+cd $HOME/ngx_brotli && git submodule update --init
+cd $HOME/nginx-1.19.7
 ./configure --with-compat --add-dynamic-module=../ngx_brotli
 make modules
 cp objs/*.so /etc/nginx/modules
 chmod 644 /etc/nginx/modules/*.so
 
-cd /root
-rm -rf /root/ngx_brotli
-rm -rf /root/nginx-1.19.7
+cd $HOME
+rm -rf $HOME/ngx_brotli
+rm -rf $HOME/nginx-1.19.7
 
 # Start nginx
 systemctl enable nginx
