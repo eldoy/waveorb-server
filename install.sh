@@ -88,6 +88,7 @@ base=https://raw.githubusercontent.com/eldoy/waveorb-server/master/config
 cd /etc/nginx && curl -O $base/etc/nginx/nginx.conf
 cd /etc/nginx/conf.d && curl -O $base/etc/nginx/conf.d/default.conf
 cd /usr/share/nginx/html && curl -O $base/usr/share/nginx/html/index.html && curl -O $base/usr/share/nginx/html/50x.html
+cd $HOME
 
 # Start nginx
 systemctl enable nginx
