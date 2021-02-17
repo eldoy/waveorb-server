@@ -93,5 +93,9 @@ ufw --force enable
 # Install cronjobs
 (crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --post-hook 'systemctl restart nginx'") | crontab -
 
+# Install utilities
+until apt install -y python3-pip; do sleep 1; done
+pip3 install jc
+
 # Reboot
 reboot now
