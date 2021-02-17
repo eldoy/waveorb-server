@@ -112,5 +112,11 @@ ufw --force enable
 until apt install -y python3-pip tree; do sleep 1; done
 pip3 install jc
 
+# Post install messages
+printf "\nPlease add this ssh key to your git account:\n\n"
+cat $HOME/.ssh/id_rsa.pub
+
+printf "\n\nDone!\n\nRebooting...\n\n"
+
 # Reboot
 reboot now
