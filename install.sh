@@ -72,6 +72,12 @@ cd $HOME
 rm -rf $HOME/ngx_brotli
 rm -rf $HOME/nginx-1.19.7
 
+# Install default files
+base=https://raw.githubusercontent.com/eldoy/waveorb-server/master/config
+cd /etc/nginx && curl -O $base/etc/nginx/nginx.conf
+cd /etc/nginx/conf.d && curl -O $base/etc/nginx/conf.d/default.conf
+cd /usr/share/nginx/html && curl -O $base/usr/share/nginx/html/index.html && curl -O $base/usr/share/nginx/html/50x.html
+
 # Start nginx
 systemctl enable nginx
 systemctl start nginx
