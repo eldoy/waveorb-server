@@ -93,6 +93,9 @@ cd /usr/share/nginx/html && curl -O $base/usr/share/nginx/html/index.html && cur
 systemctl enable nginx
 systemctl start nginx
 
+# SSH keys
+cat /dev/zero | ssh-keygen -q -N ""
+
 # Set up firewall
 ufw default deny incoming
 ufw default allow outgoing
