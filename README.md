@@ -4,11 +4,11 @@ Contains a boot script to install all the software needed to run Waveorb apps.
 
 Includes:
 
-* NodeJS
-* NGINX Loadbalancer
+* NodeJS LTS
+* NGINX loadbalancer with Brotli compression
 * Certbot Let's Encrypt SSL
-* Public Key authentication (no password)
-* Firewall
+* Public Key authentication
+* Firewall (UFW)
 
 Made for [the Waveorb Web App Development Framework.](https://waveorb.com)
 
