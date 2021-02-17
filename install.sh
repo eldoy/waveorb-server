@@ -24,6 +24,17 @@ until apt autoremove -y; do sleep 1; done
 # Install packages
 until apt install -y build-essential rsync certbot ufw gnupg2 git zsh vim wget; do sleep 1; done
 
+# Optional configuration
+if [ -n "$GIT_CONFIG_NAME" ]; then
+  echo "Setting global git user name to $GIT_CONFIG_NAME"
+  git config --global user.name "$GIT_CONFIG_NAME"
+fi
+
+if [ -n "$GIT_CONFIG_EMAIL" ]; then
+  echo "Setting global git user email to $GIT_CONFIG_EMAIL"
+  git config --global user.email "$GIT_CONFIG_EMAIL"
+fi
+
 # Install zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --unattended"
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="norm"/g' $HOME/.zshrc
