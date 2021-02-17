@@ -59,7 +59,7 @@ tar zxvf nginx-1.19.7.tar.gz
 rm nginx-1.19.7.tar.gz
 
 git clone https://github.com/google/ngx_brotli.git
-cd ngx_brotli && git submodule update --init && cd ~
+cd ngx_brotli && git submodule update --init
 cd ~/nginx-1.19.7
 
 until apt install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
