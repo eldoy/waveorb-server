@@ -10,6 +10,6 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "dependencies": {
-    "extras": "^0.4.4"
+    "extras": "^0.4.5"
   }
 }
