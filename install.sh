@@ -91,6 +91,7 @@ cp $base/etc/nginx/conf.d/*.conf /etc/nginx/conf.d
 cp $base/etc/systemd/system/*.service /etc/systemd/system
 cp $base/etc/mongod.conf /etc
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
+cp $base/.vimrc $HOME
 cd $HOME/waveorb-server && npm i
 cd $HOME
 
