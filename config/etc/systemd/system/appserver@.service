@@ -1,0 +1,18 @@
+# /etc/systemd/system/appserver@.service
+
+[Unit]
+Description=__desc
+After=network.target mongodb.service
+StartLimitInterval=0
+
+[Service]
+User=root
+Restart=always
+RestartSec=10ms
+Environment=NODE_ENV=production
+Environment=WAVEORB_PORT=__port
+WorkingDirectory=__dir
+ExecStart=__dir/__exec
+
+[Install]
+WantedBy=multi-user.target

@@ -5,9 +5,11 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com/eldoy/waveorb-server"
+    "url": "https://github.com/eldoy/waveorb-server"
   },
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
-  "devDependencies": {}
+  "dependencies": {
+    "extras": "^0.4.4"
+  }
 }
