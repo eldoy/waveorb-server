@@ -86,10 +86,12 @@ rm -rf $HOME/nginx-1.19.7
 # Install default files
 git clone --depth 1 https://github.com/eldoy/waveorb-server.git
 base=$HOME/waveorb-server/config
+cp $base/etc/ssh/* /etc/ssh
 cp $base/etc/nginx/nginx.conf /etc/nginx
 cp $base/etc/nginx/conf.d/*.conf /etc/nginx/conf.d
 cp $base/etc/systemd/system/*.service /etc/systemd/system
 cp $base/etc/mongod.conf /etc
+cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/.vimrc $HOME
 cd $HOME/waveorb-server && npm i
