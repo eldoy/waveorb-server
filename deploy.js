@@ -31,3 +31,9 @@ const extras = require('extras')
 
 // Restart systemctl restart @app-name.service
 // Restart nginx if certificate changed
+
+
+// Start service:
+// systemctl daemon-reload
+// systemctl enable app@name
+// systemctl restart app@name

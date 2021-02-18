@@ -104,7 +104,7 @@ systemctl daemon-reload
 
 # Start nginx
 systemctl enable nginx
-systemctl start nginx
+systemctl restart nginx
 
 # Start mongodb
 # systemctl enable mongod
