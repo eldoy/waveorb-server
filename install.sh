@@ -84,13 +84,15 @@ rm -rf $HOME/ngx_brotli
 rm -rf $HOME/nginx-1.19.7
 
 # Install default files
-git clone --depth 1 https://github.com/eldoy/waveorb-server.git
+git clone https://github.com/eldoy/waveorb-server.git
 base=$HOME/waveorb-server/config
 cp $base/etc/nginx/nginx.conf /etc/nginx
 cp $base/etc/nginx/conf.d/*.conf /etc/nginx/conf.d
 cp $base/etc/systemd/system/*.service /etc/systemd/system
 cp $base/etc/mongod.conf /etc
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
+cd $HOME/waveorb-server && npm i
+cd $HOME
 
 # Install mongodb
 # https://computingforgeeks.com/how-to-install-mongodb-on-debian/
