@@ -85,10 +85,30 @@ rm -rf $HOME/nginx-1.19.7
 
 # Install default files
 git clone --depth 1 https://github.com/eldoy/waveorb-server.git
+base=$HOME/waveorb-server/config
+cp $base/etc/nginx/nginx.conf /etc/nginx
+cp $base/etc/nginx/conf.d/*.conf /etc/nginx/conf.d
+cp $base/etc/systemd/system/*.service /etc/systemd/system
+cp $base/etc/mongod.conf /etc
+cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
+
+# Install mongodb
+# https://computingforgeeks.com/how-to-install-mongodb-on-debian/
+# wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+# echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | sudo tee /etc/apt/sources.list.d/mongodb-org.list
+# apt update
+# until apt install -y mongodb-org; do sleep 1; done
+
+# Enable and start services
+systemctl daemon-reload
 
 # Start nginx
 systemctl enable nginx
 systemctl start nginx
+
+# Start mongodb
+# systemctl enable mongod
+# systemctl restart mongod
 
 # SSH keys
 cat /dev/zero | ssh-keygen -q -N ""
