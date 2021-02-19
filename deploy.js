@@ -38,10 +38,10 @@ rmdir(`.git`)
 
 // Scan package.json and find next version number
 // Do not deploy if version exists, abort
-const pack = read('package.json')
+const pkg = read('package.json')
 
-console.log(pack)
-if (!pack.version) {
+console.log(pkg)
+if (!pkg.version) {
   exit('Version is missing!')
 }
 
