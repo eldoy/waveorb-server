@@ -14,8 +14,8 @@ const config = {
 
 const template = nginx({
   name: 'hello',
-  domain: config.domains[0],
   proxy: config.proxy,
+  domain: config.domains[0],
   ssl: true
 })
 console.log(template)
