@@ -12,10 +12,22 @@ const config = {
   redirects: [ '/about.html', '/' ]
 }
 
+const name = 'hello'
+const domain = config.domains[0]
+const names = domain.names.replace(/\s+/, ' ')
+const main = names.split(' ')[0]
+const proxy = config.proxy || 'http://localhost:5000'
+const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
+const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
+const dir = `/root/apps/${name}/current/dist`
+
 const template = nginx({
-  name: 'hello',
-  proxy: config.proxy,
-  domain: config.domains[0],
+  names,
+  main,
+  proxy,
+  cert,
+  key,
+  dir,
   ssl: true
 })
 console.log(template)
