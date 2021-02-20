@@ -59,7 +59,12 @@ if (!config.proxy) {
 }
 
 if (!config.domains || !config.domains.length) {
-  exit('Config domains field is missing!')
+  exit('Config domains field is missing or empty!')
+}
+
+// Allow simple domain setting
+if (typeof config.domains == 'string') {
+  config.domains = [{ names: config.domains }]
 }
 
 // Install packages
@@ -84,7 +89,8 @@ for (const domain of config.domains) {
   const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
   const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
   const dir = `/root/apps/${name}/current/dist`
-  const ssl = config.ssl !== false
+  const ssl = domain.ssl !== false
+  const dryRun = !!domain.dryRun
 
   // Set up nginx config template
   const template = nginx({ names, main, proxy, cert, key, dir })
@@ -104,7 +110,7 @@ for (const domain of config.domains) {
       : `--register-unsafely-without-email`
 
     const domainOption = names.split(' ').map(n => `-d ${n}`).join(' ')
-    const dryRun = true
+
     const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${dryRun ? '--dry-run ' : ''}${emailOption} ${domainOption}`
     console.log(certbotCommand)
 
