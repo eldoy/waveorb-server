@@ -41,18 +41,9 @@ sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="norm"/g' $HOME/.zshrc
 sed -i '/DISABLE_AUTO_UPDATE/s/^# //g' $HOME/.zshrc
 chsh -s /usr/bin/zsh root
 
-# Install NVM
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-echo 'export NVM_DIR="$HOME/.nvm"' >> $HOME/.zshrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $HOME/.zshrc
-echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $HOME/.zshrc
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
 # Install NodeJS
-nvm install --lts
+curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+apt install -y nodejs
 
 # Update npm
 npm install -g npm
