@@ -41,6 +41,9 @@ sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="norm"/g' $HOME/.zshrc
 sed -i '/DISABLE_AUTO_UPDATE/s/^# //g' $HOME/.zshrc
 chsh -s /usr/bin/zsh root
 
+# Add aliases
+echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.zshrc
+
 # Install NodeJS
 curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
 apt install -y nodejs
