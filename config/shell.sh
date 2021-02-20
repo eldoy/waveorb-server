@@ -26,3 +26,6 @@ alias gp="git push"
 alias gpf="git push --force"
 alias gu="git pull"
 alias gur="git pull --rebase"
+
+# Other aliases
+alias reload="source ~/.zshrc"
