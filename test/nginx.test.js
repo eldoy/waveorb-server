@@ -27,7 +27,6 @@ const template = nginx({
   proxy,
   cert,
   key,
-  dir,
-  ssl: true
-})
+  dir
+})({ ssl: true })
 console.log(template)
