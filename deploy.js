@@ -98,6 +98,9 @@ async function deploy() {
     const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
     const dir = `/root/apps/${name}/current/dist`
 
+    // Set up nginx config template
+    const template = nginx({ names, main, proxy, cert, key, dir })
+
     // Set up SSL certificate if it doesn't exist
     if (!exist(cert)) {
       const emailOption = config.email
@@ -118,18 +121,9 @@ async function deploy() {
     if (!exist(nginxConf)) {
       // Install nginx config
       hasNewNginxConfig = true
-      const template = nginx({
-        names,
-        main,
-        proxy,
-        cert,
-        key,
-        dir,
-        ssl: false
-      })
-
-      write(nginxConf, template)
-      console.log(template)
+      const content = template({ ssl: false })
+      write(nginxConf, content)
+      console.log(content)
     }
 
     // Apply redirects? Can be done from the app as well. Need to add to Nginx config.
