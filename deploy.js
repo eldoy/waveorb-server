@@ -61,7 +61,7 @@ if (!exist(`package.json`)) {
 }
 const pkg = read(`package.json`)
 
-if (!pkg.scripts.build) {
+if (!pkg.scripts?.build) {
   exit('Build script not found in package.json')
 }
 
@@ -129,7 +129,7 @@ for (const domain of config.domains) {
 // TODO: Apply jobs
 
 // Apply migrations
-if (pkg.scripts.migrate) {
+if (pkg.scripts?.migrate) {
   run(`npm run migrate`)
 }
 
