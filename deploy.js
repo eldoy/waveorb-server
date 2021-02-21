@@ -81,7 +81,7 @@ for (const domain of config.domains) {
     exit('Domain names field is missing!')
   }
 
-  console.log(`Setting up domains: ${domain.names}`)
+  console.log(`Setting up ${domain.names}`)
 
   const names = domain.names.replace(/\s+/, ' ')
   const main = names.split(' ')[0]
@@ -141,3 +141,5 @@ run(`systemctl restart nginx`)
 // Start app service
 run(`systemctl enable app@${name}`)
 run(`systemctl restart app@${name}`)
+
+console.log('Deploy successful.')
