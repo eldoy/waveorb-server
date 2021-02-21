@@ -41,7 +41,7 @@ const revision = run('git rev-parse --short HEAD', { silent: true }).stdout.trim
 console.log(`Revision found: ${revision}`)
 
 // Fail if revision already exists
-if (exist(`../${revision}`)) {
+if (exist(`/root/apps/${name}/${revision}`)) {
   exit('Revision already exists!\n\nPlease push an update and deploy again.')
 }
 
