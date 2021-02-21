@@ -11,10 +11,8 @@ User=root
 Restart=always
 RestartSec=10ms
 Environment=NODE_ENV=production
-# EnvironmentFile=/root/apps/%i/shared/env.conf
-# PassEnvironment=WAVEORB_PORT
 WorkingDirectory=/root/apps/%i/current
-ExecStart=npm run serve:production
+ExecStart=npm run serve
 
 [Install]
 WantedBy=multi-user.target
