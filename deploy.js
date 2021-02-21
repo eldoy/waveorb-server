@@ -131,7 +131,7 @@ const { jobs = [] } = config
 if (jobs.length) {
   const existing = run(`crontab -l`).stdout.trim().split('\n')
   const all = [...new Set(existing.concat(jobs))].join('\n')
-  run(`echo "${all}" | crontab -`)
+  if (all) run(`echo "${all}" | crontab -`)
 }
 
 // Apply migrations
