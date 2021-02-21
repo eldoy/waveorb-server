@@ -91,9 +91,10 @@ for (const domain of config.domains) {
   const dir = `/root/apps/${name}/current/dist`
   const ssl = domain.ssl !== false
   const dryRun = !!domain.dryRun
+  const redirects = domain.redirects || []
 
   // Set up nginx config template
-  const template = nginx({ names, main, proxy, cert, key, dir })
+  const template = nginx({ names, main, proxy, cert, key, dir, redirects })
 
   const nginxName = main.replace(/\./g, '-')
   const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
@@ -120,13 +121,11 @@ for (const domain of config.domains) {
 
   // Write config based on preference
   write(nginxConf, template({ ssl }))
-
-  // Apply redirects? Can be done from the app as well. Need to add to Nginx config.
-  // Make sure SSL certificate exists and is updated
 }
 
 // Apply jobs? Later.
-// Apply migrations? Later.
+// Apply migrations
+run(`npm run migrate`)
 
 // Move stuff into place
 process.chdir('..')
