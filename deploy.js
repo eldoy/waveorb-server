@@ -36,12 +36,6 @@ if (!exist('tmp')) {
 
 process.chdir('tmp')
 
-// Find waveorb file
-const wfile = `waveorb.json`
-if (!exist(wfile)) {
-  exit('Waveorb file missing!')
-}
-
 const revision = run('git rev-parse --short HEAD', { silent: true }).stdout.trim()
 
 console.log(`Revision found: ${revision}`)
@@ -51,15 +45,24 @@ if (exist(`../${revision}`)) {
   exit('Revision already exists!\n\nPlease push an update and deploy again.')
 }
 
-const config = read(wfile)
-console.log(config)
-
-if (!config.proxy) {
-  exit('Config proxy field is missing!')
+// Find waveorb file
+if (!exist(`waveorb.json`)) {
+  exit('Waveorb file missing!')
 }
+const config = read(`waveorb.json`)
+console.log(config)
 
 if (!config.domains || !config.domains.length) {
   exit('Config domains field is missing or empty!')
+}
+
+if (!exist(`package.json`)) {
+  exit('Config proxy field is missing!')
+}
+const pkg = read(`package.json`)
+
+if (!pkg.scripts.build) {
+  exit('Build script not found in package.json')
 }
 
 // Allow simple domain setting
@@ -123,9 +126,12 @@ for (const domain of config.domains) {
   write(nginxConf, template({ ssl }))
 }
 
-// Apply jobs? Later.
+// TODO: Apply jobs
+
 // Apply migrations
-run(`npm run migrate`)
+if (pkg.scripts.migrate) {
+  run(`npm run migrate`)
+}
 
 // Move stuff into place
 process.chdir('..')
