@@ -142,4 +142,4 @@ run(`systemctl restart nginx`)
 run(`systemctl enable app@${name}`)
 run(`systemctl restart app@${name}`)
 
-console.log('Deploy successful.')
+console.log('\nDeployed.\n')
