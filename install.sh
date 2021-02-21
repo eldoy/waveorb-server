@@ -123,9 +123,6 @@ ufw allow 80
 ufw allow 443
 ufw --force enable
 
-# Install cronjobs
-(crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --post-hook 'systemctl restart nginx'") | crontab -
-
 # Install utilities
 until apt install -y python3-pip tree; do sleep 1; done
 pip3 install jc
