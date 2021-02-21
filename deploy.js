@@ -53,7 +53,7 @@ const config = read(`waveorb.json`)
 console.log(config)
 
 if (!config.domains || !config.domains.length) {
-  exit('Config domains field is missing or empty!')
+  exit('Config domains field is missing!')
 }
 
 if (!exist(`package.json`)) {
@@ -79,12 +79,15 @@ run(`npm run build`)
 
 // For each domain
 for (const domain of config.domains) {
+  // Support string for domain
+  if (typeof domain == 'string' ) {
+    domain = { names: domain }
+  }
   // Make sure nginx config for this app exists or create it
   // If create, also add Let's Encrypt certificate
   if (!domain.names) {
     exit('Domain names field is missing!')
   }
-
   console.log(`Setting up ${domain.names}`)
 
   const names = domain.names.replace(/\s+/, ' ')
