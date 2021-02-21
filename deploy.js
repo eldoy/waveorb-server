@@ -126,7 +126,13 @@ for (const domain of config.domains) {
   write(nginxConf, template({ ssl }))
 }
 
-// TODO: Apply jobs
+// Cron jobs
+const { jobs = [] } = config
+if (jobs.length) {
+  const existing = run(`crontab -l`).stdout.trim().split('\n')
+  const all = [...new Set(existing.concat(jobs))].join('\n')
+  run(`echo "${all}" | crontab -`)
+}
 
 // Apply migrations
 if (pkg.scripts?.migrate) {
