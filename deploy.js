@@ -67,7 +67,8 @@ if (!pkg.scripts?.build) {
 
 // Allow simple domain setting
 if (typeof config.domains == 'string') {
-  config.domains = [{ names: config.domains }]
+  const domain = { names, redirects, ssl } = config
+  config.domains = [domain]
 }
 
 // Install packages
