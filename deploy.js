@@ -66,6 +66,8 @@ if (typeof config.domains == 'string') {
   config.domains = [domain]
 }
 
+console.log(config)
+
 // Install packages
 run(`npm i`)
 
