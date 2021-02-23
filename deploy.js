@@ -5,7 +5,7 @@ const repo = process.argv[2]
 if (!repo) {
   exit(`Repository URL is missing!`)
 }
-console.log(repo)
+console.log(`Deploying repository ${repo}`)
 
 // Extract name
 let name = process.argv[3]
@@ -13,7 +13,6 @@ if (!name) {
   name = repo.split('/').reverse()[0]
 }
 name = name.trim().replace(' ', '_').toLowerCase()
-console.log(name)
 
 process.chdir('/root')
 
@@ -37,7 +36,7 @@ console.log(`Revision found: ${revision}`)
 
 // Fail if revision already exists
 if (exist(`/root/apps/${name}/${revision}`)) {
-  exit('Revision already exists!\n\nPlease push an update and deploy again.')
+  exit('Revision already exists!\n\nPlease push an update and deploy again.\n')
 }
 
 // Find waveorb file
@@ -45,12 +44,12 @@ if (!exist(`waveorb.json`)) {
   exit('Waveorb file missing!')
 }
 const config = read(`waveorb.json`)
-console.log(config)
 
 if (!config.domains || !config.domains.length) {
   exit('Config domains field is missing!')
 }
 
+// Find package.json file
 if (!exist(`package.json`)) {
   exit('Config proxy field is missing!')
 }
@@ -62,11 +61,11 @@ if (!pkg.scripts?.build) {
 
 // Allow simple domain setting
 if (typeof config.domains == 'string') {
-  const domain = { names, redirects, ssl } = config
-  config.domains = [domain]
+  const { domains, redirects, ssl } = config
+  config.domains = [{ names: domains, redirects, ssl }]
+  delete config.redirects
+  delete config.ssl
 }
-
-console.log(config)
 
 // Install packages
 run(`npm i`)
@@ -80,16 +79,18 @@ for (const domain of config.domains) {
   if (typeof domain == 'string' ) {
     domain = { names: domain }
   }
-  console.log({ domain })
+
   // Make sure nginx config for this app exists or create it
   // If create, also add Let's Encrypt certificate
   if (!domain.names) {
     exit('Domain names field is missing!')
   }
-  console.log(`Setting up ${domain.names}`)
 
   const names = domain.names.replace(/\s+/, ' ')
   const main = names.split(' ')[0]
+  
+  console.log(`Serving ${main}`)
+
   const proxy = config.proxy || 'http://localhost:5000'
   const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
   const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
