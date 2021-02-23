@@ -32,8 +32,8 @@ if (!exist('tmp')) {
 process.chdir('tmp')
 
 const revision = get('git rev-parse --short HEAD')
-
-console.log(`Revision found: ${revision}`)
+const branch = get(`git rev-parse --abbrev-ref HEAD`)
+console.log(`Revision found: ${revision}@${branch}`)
 
 // Fail if revision already exists
 if (exist(`/root/apps/${name}/${revision}`)) {
