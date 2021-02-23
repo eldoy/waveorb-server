@@ -146,12 +146,20 @@ if (pkg.scripts?.migrate) {
 
 // Move stuff into place
 process.chdir('..')
-
 run(`mv tmp ${revision}`)
-let prev = exist('current') ? fs.readlinkSync('current') : ''
-run(`ln -sfn ${revision} current`)
-if (exist(prev)) rmdir(prev)
 
+// Record previous revision
+let prev = exist('current') ? fs.readlinkSync('current') : ''
+
+// Symlink to new revision
+run(`ln -sfn ${revision} current`)
+
+if (exist(prev)) {
+  console.log(`Removing previous revision ${prev}`)
+  rmdir(prev)
+}
+
+// Reload services
 run(`systemctl daemon-reload`)
 
 // Restart nginx
