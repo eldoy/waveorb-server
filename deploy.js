@@ -1,10 +1,5 @@
-const { rmdir, mkdir, run, exist, read, write } = require('extras')
+const { rmdir, mkdir, run, exist, read, write, get, exit } = require('extras')
 const nginx = require('./lib/nginx.js')
-
-function exit(msg, code = 1) {
-  console.log(msg)
-  process.exit(code)
-}
 
 const repo = process.argv[2]
 if (!repo) {
@@ -36,7 +31,7 @@ if (!exist('tmp')) {
 
 process.chdir('tmp')
 
-const revision = run('git rev-parse --short HEAD', { silent: true }).stdout.trim()
+const revision = get('git rev-parse --short HEAD')
 
 console.log(`Revision found: ${revision}`)
 
