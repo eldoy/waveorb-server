@@ -1,3 +1,4 @@
+const fs = require('fs')
 const { rmdir, mkdir, run, exist, read, write, get, exit } = require('extras')
 const nginx = require('./lib/nginx.js')
 
@@ -145,9 +146,12 @@ if (pkg.scripts?.migrate) {
 
 // Move stuff into place
 process.chdir('..')
+
 run(`mv tmp ${revision}`)
-if (exist('current')) run(`rm current`)
-run(`ln -s ${revision} current`)
+let prev = exist('current') ? fs.readlinkSync('current') : ''
+run(`ln -sfn ${revision} current`)
+if (exist(prev)) rmdir(prev)
+
 run(`systemctl daemon-reload`)
 
 // Restart nginx
