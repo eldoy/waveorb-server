@@ -33,7 +33,7 @@ process.chdir('tmp')
 
 const revision = get('git rev-parse --short HEAD')
 const branch = get(`git rev-parse --abbrev-ref HEAD`)
-console.log(`Revision found: ${revision}@${branch}`)
+console.log(`Revision ${revision} on ${branch} branch`)
 
 // Fail if revision already exists
 if (exist(`/root/apps/${name}/${revision}`)) {
