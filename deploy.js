@@ -78,6 +78,7 @@ for (const domain of config.domains) {
   if (typeof domain == 'string' ) {
     domain = { names: domain }
   }
+  console.log({ domain })
   // Make sure nginx config for this app exists or create it
   // If create, also add Let's Encrypt certificate
   if (!domain.names) {
