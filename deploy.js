@@ -154,7 +154,7 @@ let prev = exist('current') ? fs.readlinkSync('current') : ''
 // Symlink to new revision
 run(`ln -sfn ${revision} current`)
 
-if (exist(prev)) {
+if (prev) {
   console.log(`Removing previous revision ${prev}`)
   rmdir(prev)
 }
