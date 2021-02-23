@@ -68,6 +68,7 @@ if (typeof config.domains == 'string') {
 }
 
 // Install packages
+console.log('Installing npm packages...')
 run(`npm i`)
 
 // Build
@@ -88,7 +89,7 @@ for (const domain of config.domains) {
 
   const names = domain.names.replace(/\s+/, ' ')
   const main = names.split(' ')[0]
-  
+
   console.log(`Serving ${main}`)
 
   const proxy = config.proxy || 'http://localhost:5000'
