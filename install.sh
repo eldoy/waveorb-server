@@ -30,7 +30,17 @@ until apt update && apt upgrade -y; do sleep 1; done
 until apt autoremove -y; do sleep 1; done
 
 # Install packages
-until apt install -y build-essential rsync certbot ufw gnupg2 git zsh vim wget; do sleep 1; done
+until apt-get install -y build-essential rsync certbot ufw gnupg2 git zsh vim wget; do sleep 1; done
+
+# Install mongodb
+mkdir -p /data/db
+wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+apt-get update
+until apt-get install -y mongodb-org; do sleep 1; done
+
+# Install redis
+until apt-get install -y redis-server; do sleep 1; done
 
 # Optional configuration
 if [ -n "$GIT_CONFIG_NAME" ]; then
@@ -54,7 +64,7 @@ echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.zshrc
 
 # Install NodeJS
 curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
-apt install -y nodejs
+apt-get install -y nodejs
 
 # Update npm
 npm install -g npm
@@ -65,12 +75,12 @@ apt-key add nginx_signing.key
 rm nginx_signing.key
 printf "deb https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \ndeb-src https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \n" >> /etc/apt/sources.list.d/nginx_mainline.list
 apt update
-until apt install -y nginx python-certbot-nginx; do sleep 1; done
+until apt-get install -y nginx python-certbot-nginx; do sleep 1; done
 # Other modules:
 # nginx-module-geoip nginx-module-image-filter nginx-module-njs nginx-module-perl nginx-module-xslt
 
 # Install brotli
-until apt install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
+until apt-get install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
 
 wget https://nginx.org/download/nginx-1.19.7.tar.gz
 tar zxvf nginx-1.19.7.tar.gz
@@ -95,19 +105,11 @@ cp $base/etc/ssh/* /etc/ssh
 cp $base/etc/nginx/nginx.conf /etc/nginx
 cp $base/etc/nginx/conf.d/default.conf /etc/nginx/conf.d
 cp $base/etc/systemd/system/*.service /etc/systemd/system
-cp $base/etc/mongod.conf /etc
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/.vimrc $HOME
 cd $HOME/waveorb-server && npm i
 cd $HOME
-
-# Install mongodb
-# https://computingforgeeks.com/how-to-install-mongodb-on-debian/
-# wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
-# echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | sudo tee /etc/apt/sources.list.d/mongodb-org.list
-# apt update
-# until apt install -y mongodb-org; do sleep 1; done
 
 # Enable and start services
 systemctl daemon-reload
@@ -135,7 +137,7 @@ ufw --force enable
 # (crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --post-hook 'systemctl restart nginx'") | crontab -
 
 # Install utilities
-until apt install -y python3-pip tree; do sleep 1; done
+until apt-get install -y python3-pip tree; do sleep 1; done
 pip3 install jc
 
 # Post install messages
