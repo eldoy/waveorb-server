@@ -6,8 +6,16 @@ echo "LC_ALL=en_US.UTF-8" >> /etc/environment
 echo "EDITOR=vim" >> /etc/environment
 echo "NODE_ENV=production" >> /etc/environment
 
+# Install swap file
+fallocate -l 4G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+
 # Set swappiness
 sysctl vm.swappiness=10
+echo "vm.swappiness=10" >> /etc/sysctl.conf
 
 # Set locale
 echo "UTC" > /etc/timezone && \
