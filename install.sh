@@ -68,7 +68,7 @@ echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.zshrc
 
 # Install NodeJS
 curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
-apt-get install -y nodejs
+until apt-get install -y nodejs; do sleep 1; done
 
 # Update npm
 npm install -g npm
@@ -80,8 +80,6 @@ rm nginx_signing.key
 printf "deb https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \ndeb-src https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \n" >> /etc/apt/sources.list.d/nginx_mainline.list
 apt update
 until apt-get install -y nginx python-certbot-nginx; do sleep 1; done
-# Other modules:
-# nginx-module-geoip nginx-module-image-filter nginx-module-njs nginx-module-perl nginx-module-xslt
 
 # Install brotli
 until apt-get install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
@@ -123,8 +121,8 @@ systemctl enable nginx
 systemctl restart nginx
 
 # Start mongodb
-# systemctl enable mongod
-# systemctl restart mongod
+systemctl enable mongod
+systemctl restart mongod
 
 # SSH keys
 cat /dev/zero | ssh-keygen -q -N ""
