@@ -1,5 +1,11 @@
 # zsh config
 PROMPT='%F{240}%n%F{red}@%F{green}%m:%F{green}%~$ %F{reset}'
+export SAVEHIST=100
+export HISTFILE=~/.zsh_history
+setopt HIST_IGNORE_ALL_DUPS
+setopt INC_APPEND_HISTORY
+bindkey '\e[A' history-beginning-search-backward
+bindkey '\e[B' history-beginning-search-forward
 
 # ls short cuts
 alias ls='ls --color=auto'
