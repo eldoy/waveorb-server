@@ -12,7 +12,6 @@ alias j="journalctl -e"
 alias log="journalctl -e -u"
 
 # Git short cuts
-unalias g
 function g() {
   git add --all && git commit -m "$1" && git push
 }
