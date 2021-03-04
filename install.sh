@@ -30,7 +30,7 @@ until apt update && apt upgrade -y; do sleep 1; done
 until apt autoremove -y; do sleep 1; done
 
 # Install packages
-until apt-get install -y build-essential rsync certbot ufw gnupg2 git zsh vim wget; do sleep 1; done
+until apt-get install -y build-essential rsync certbot ufw gnupg2 git vim wget; do sleep 1; done
 
 # Install mongodb
 mkdir -p /data/db
@@ -54,10 +54,14 @@ if [ -n "$GIT_CONFIG_EMAIL" ]; then
 fi
 
 # Install zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --unattended"
-sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="norm"/g' $HOME/.zshrc
-sed -i '/DISABLE_AUTO_UPDATE/s/^# //g' $HOME/.zshrc
-chsh -s /usr/bin/zsh root
+until apt-get install -y zsh; do sleep 1; done
+/usr/bin/zsh
+git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+setopt EXTENDED_GLOB
+for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+done
+chsh -s /usr/bin/zsh
 
 # Add aliases
 echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.zshrc
