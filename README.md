@@ -16,7 +16,9 @@ Made for [the Waveorb Web App Development Framework.](https://waveorb.com)
 
 Create a server on for example [Vultr VPS](https://vultr.com). Add your SSH key there so you can ssh to it without a password.
 
-Choose Debian 10 as operating system. Once it's running, log in to your server via SSH (`ssh root@ip-address`) and run this command:
+Choose Debian 10 as operating system. Enable private networking if you need the machine to be connected to from other machines.
+
+Once it's running, log in to your server via SSH (`ssh root@ip-address`) and run this command:
 ```sh
 curl https://raw.githubusercontent.com/eldoy/waveorb-server/master/install.sh | sh
 ```
