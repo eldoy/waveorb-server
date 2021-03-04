@@ -57,18 +57,8 @@ if [ -n "$GIT_CONFIG_EMAIL" ]; then
   git config --global user.email "$GIT_CONFIG_EMAIL"
 fi
 
-# Install zsh
-until apt-get install -y zsh; do sleep 1; done
-git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-zsh
-setopt EXTENDED_GLOB
-for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-done
-chsh -s /usr/bin/zsh
-
 # Add aliases
-echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.zshrc
+echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.bashrc
 
 # Install NodeJS
 curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
