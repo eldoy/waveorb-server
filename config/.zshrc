@@ -1,3 +1,12 @@
+# zsh config
+PROMPT='%F{240}%n%F{red}@%F{green}%m:%F{green}%~$ %F{reset}'
+
+# ls short cuts
+alias ls='ls --color=auto'
+alias l='ls'
+alias ll='ls -la'
+alias l.='ls -d .*'
+
 # Systemctl short cuts
 alias s="systemctl"
 alias status="systemctl status"
@@ -27,4 +36,5 @@ alias gu="git pull"
 alias gur="git pull --rebase"
 
 # Other aliases
-alias reload="source ~/.zshrc"
+alias src="source ~/.zshrc"
+alias zs="vim ~/.zshrc && src"

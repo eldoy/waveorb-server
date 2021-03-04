@@ -61,9 +61,6 @@ fi
 until apt-get install -y zsh; do sleep 1; done
 chsh -s /usr/bin/zsh root
 
-# Add aliases
-echo "source $HOME/waveorb-server/config/shell.sh" >> $HOME/.zshrc
-
 # Install NodeJS
 curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
 until apt-get install -y nodejs; do sleep 1; done
@@ -107,6 +104,7 @@ cp $base/etc/nginx/conf.d/default.conf /etc/nginx/conf.d
 cp $base/etc/systemd/system/*.service /etc/systemd/system
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/.vimrc $HOME
+cp $base/.zshrc $HOME
 cd $HOME/waveorb-server && npm i
 cd $HOME
 
