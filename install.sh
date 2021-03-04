@@ -26,11 +26,15 @@ dpkg-reconfigure --frontend=noninteractive locales && \
 update-locale LANG=en_US.UTF-8
 
 # Update
-until apt update && apt upgrade -y; do sleep 1; done
-until apt autoremove -y; do sleep 1; done
+until apt-get update && apt-get upgrade -y; do sleep 1; done
+until apt-get autoremove -y; do sleep 1; done
 
 # Install packages
 until apt-get install -y build-essential rsync certbot ufw gnupg2 git vim wget; do sleep 1; done
+
+# Install utilities
+until apt-get install -y python3-pip tree; do sleep 1; done
+pip3 install jc
 
 # Install mongodb
 mkdir -p /data/db
@@ -55,8 +59,8 @@ fi
 
 # Install zsh
 until apt-get install -y zsh; do sleep 1; done
-/usr/bin/zsh
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+zsh
 setopt EXTENDED_GLOB
 for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
   ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
@@ -78,7 +82,7 @@ wget https://nginx.org/keys/nginx_signing.key
 apt-key add nginx_signing.key
 rm nginx_signing.key
 printf "deb https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \ndeb-src https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \n" >> /etc/apt/sources.list.d/nginx_mainline.list
-apt update
+apt-get update
 until apt-get install -y nginx python-certbot-nginx; do sleep 1; done
 
 # Install brotli
@@ -108,7 +112,6 @@ cp $base/etc/nginx/nginx.conf /etc/nginx
 cp $base/etc/nginx/conf.d/default.conf /etc/nginx/conf.d
 cp $base/etc/systemd/system/*.service /etc/systemd/system
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
-cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/.vimrc $HOME
 cd $HOME/waveorb-server && npm i
 cd $HOME
@@ -134,13 +137,6 @@ ufw allow 22
 ufw allow 80
 ufw allow 443
 ufw --force enable
-
-# Install cronjobs
-# (crontab -l 2>/dev/null; echo "20 3 * * * certbot renew --noninteractive --post-hook 'systemctl restart nginx'") | crontab -
-
-# Install utilities
-until apt-get install -y python3-pip tree; do sleep 1; done
-pip3 install jc
 
 # Post install messages
 printf "\nPlease add this ssh key to your git account:\n\n"
