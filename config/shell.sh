@@ -1,15 +1,15 @@
 # Systemctl short cuts
 alias s="systemctl"
-alias st="systemctl status"
-alias ss="systemctl start"
-alias sr="systemctl restart"
-alias se="systemctl enable"
-alias sd="systemctl disable"
-alias sl="systemctl daemon-reload"
+alias status="systemctl status"
+alias start="systemctl start"
+alias restart="systemctl restart"
+alias enable="systemctl enable"
+alias disable="systemctl disable"
+alias reload="systemctl daemon-reload"
 
 # Journalctl short cuts
-alias j="journalctl"
-alias ju="journalctl -u"
+alias j="journalctl -e"
+alias log="journalctl -e -u"
 
 # Git short cuts
 unalias g
