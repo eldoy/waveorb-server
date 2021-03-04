@@ -111,13 +111,10 @@ cd $HOME
 # Enable and start services
 systemctl daemon-reload
 
-# Start nginx
+# Enable services
 systemctl enable nginx
-systemctl restart nginx
-
-# Start mongodb
 systemctl enable mongod
-systemctl restart mongod
+systemctl enable redis
 
 # SSH keys
 cat /dev/zero | ssh-keygen -q -N ""
