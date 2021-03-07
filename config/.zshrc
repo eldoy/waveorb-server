@@ -6,6 +6,7 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt INC_APPEND_HISTORY
 bindkey '\e[A' history-beginning-search-backward
 bindkey '\e[B' history-beginning-search-forward
+bindkey -e
 
 # ls short cuts
 alias ls='ls --color=auto'
