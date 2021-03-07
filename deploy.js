@@ -75,6 +75,8 @@ run(`npm i`)
 // Build
 run(`npm run build`)
 
+const proxy = config.proxy
+
 // For each domain
 for (const domain of config.domains) {
   // Support string for domain
@@ -93,7 +95,6 @@ for (const domain of config.domains) {
 
   console.log(`Serving ${main}`)
 
-  const proxy = config.proxy
   const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
   const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
   const dir = `/root/apps/${name}/current/dist`
