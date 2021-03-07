@@ -52,7 +52,7 @@ if (!config.domains || !config.domains.length) {
 
 // Find package.json file
 if (!exist(`package.json`)) {
-  exit('Config proxy field is missing!')
+  exit('File package.json is missing!')
 }
 const pkg = read(`package.json`)
 
@@ -93,7 +93,7 @@ for (const domain of config.domains) {
 
   console.log(`Serving ${main}`)
 
-  const proxy = config.proxy || 'http://localhost:5000'
+  const proxy = config.proxy
   const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
   const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
   const dir = `/root/apps/${name}/current/dist`
@@ -165,8 +165,13 @@ run(`systemctl daemon-reload`)
 // Restart nginx
 run(`systemctl restart nginx`)
 
-// Start app service
-run(`systemctl enable app@${name}`)
-run(`systemctl restart app@${name}`)
+// Start app service if proxy
+if (proxy) {
+  run(`systemctl enable app@${name}`)
+  run(`systemctl restart app@${name}`)
+} else {
+  run(`systemctl stop app@${name}`)
+  run(`systemctl disable app@${name}`)
+}
 
 console.log('\nDeployed.\n')
