@@ -149,7 +149,7 @@ process.chdir('..')
 run(`mv tmp ${revision}`)
 
 // Record previous revision
-let prev = exist('current') ? fs.readlinkSync('current') : ''
+const prev = exist('current') ? fs.readlinkSync('current') : ''
 
 // Symlink to new revision
 run(`ln -sfn ${revision} current`)
