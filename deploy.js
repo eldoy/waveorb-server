@@ -75,7 +75,9 @@ run(`npm i`)
 // Build
 run(`npm run build`)
 
-const proxy = config.proxy
+const { proxy, basicauth } = config
+const dist = `/root/apps/${name}/current/dist`
+const data = `/root/apps/${name}/data`
 
 // For each domain
 for (const domain of config.domains) {
@@ -97,13 +99,12 @@ for (const domain of config.domains) {
 
   const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
   const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
-  const dir = `/root/apps/${name}/current/dist`
   const ssl = domain.ssl !== false
   const dryRun = !!domain.dryRun
   const redirects = domain.redirects || []
 
   // Set up nginx config template
-  const template = nginx({ names, main, proxy, cert, key, dir, redirects })
+  const template = nginx({ names, main, proxy, cert, key, dist, data, redirects, basicauth })
 
   const nginxName = main.replace(/\./g, '-')
   const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
@@ -130,6 +131,11 @@ for (const domain of config.domains) {
 
   // Write config based on preference
   write(nginxConf, template({ ssl }))
+}
+
+if (basicauth) {
+  const [user, password] = basicauth.split(':')
+  run(`htpasswd -b -c ${data}/.htpasswd ${user} ${password}`)
 }
 
 // Cron jobs
