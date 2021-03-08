@@ -140,6 +140,11 @@ if (jobs.length) {
   if (all) run(`echo "${all}" | crontab -`)
 }
 
+// Build sitemap
+if (config.sitemap && pkg.scripts?.sitemap) {
+  run(`npm run sitemap`)
+}
+
 // Apply migrations
 if (pkg.scripts?.migrate) {
   run(`npm run migrate`)
@@ -173,6 +178,13 @@ if (proxy) {
 } else {
   run(`systemctl stop app@${name}`)
   run(`systemctl disable app@${name}`)
+}
+
+process.chdir('current')
+
+// Ping servers
+if (config.ping && pkg.scripts?.ping) {
+  run(`npm run ping`)
 }
 
 console.log('\nDeployed.\n')
