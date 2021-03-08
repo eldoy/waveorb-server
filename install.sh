@@ -30,7 +30,7 @@ until apt-get update && apt-get upgrade -y; do sleep 1; done
 until apt-get autoremove -y; do sleep 1; done
 
 # Install packages
-until apt-get install -y build-essential rsync certbot ufw gnupg2 git vim wget; do sleep 1; done
+until apt-get install -y build-essential rsync certbot ufw gnupg2 git vim wget apache2-utils; do sleep 1; done
 
 # Install utilities
 until apt-get install -y python3-pip tree; do sleep 1; done
