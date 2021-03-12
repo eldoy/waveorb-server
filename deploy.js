@@ -13,7 +13,7 @@ let name = process.argv[3]
 if (!name) {
   name = repo.split('/').reverse()[0]
 }
-name = name.trim().replace(' ', '_').toLowerCase()
+name = name.trim().replace(' ', '_').toLowerCase().replace(/\.git$/, '')
 
 process.chdir('/root')
 
