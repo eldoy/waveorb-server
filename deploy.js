@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { rmdir, mkdir, run, exist, read, write, get, exit } = require('extras')
+const { rmdir, mkdir, run, exist, read, write, get, exit, regexp } = require('extras')
 const nginx = require('./lib/nginx.js')
 
 const repo = process.argv[2]
@@ -56,10 +56,6 @@ if (!exist(`package.json`)) {
 }
 const pkg = read(`package.json`)
 
-if (!pkg.scripts?.build) {
-  exit('Build script not found in package.json')
-}
-
 // Allow simple domain setting
 if (typeof config.domains == 'string') {
   const { domains, redirects, ssl } = config
@@ -70,10 +66,13 @@ if (typeof config.domains == 'string') {
 
 // Install packages
 console.log('Installing npm packages...')
-run(`npm i`)
+run(`npm i`, { silent: true })
 
 // Build
-run(`npm run build`)
+if (pkg.scripts?.build) {
+  console.log('Building app...')
+  run(`npm run build`, { silent: true })
+}
 
 const { proxy, basicauth } = config
 const dist = `/root/apps/${name}/current/dist`
@@ -92,10 +91,16 @@ for (const domain of config.domains) {
     exit('Domain names field is missing!')
   }
 
+  // Skip if it's an IP address, doesn't need nginx config
+  if (regexp.ip.test(domain.names)) {
+    console.log('Found ip address, skipping...')
+    continue
+  }
+
   const names = domain.names.replace(/\s+/, ' ')
   const main = names.split(' ')[0]
 
-  console.log(`Serving ${main}`)
+  console.log(`Processsing ${main}...`)
 
   const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
   const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
@@ -148,12 +153,12 @@ if (jobs.length) {
 
 // Build sitemap
 if (config.sitemap && pkg.scripts?.sitemap) {
-  run(`npm run sitemap`)
+  run(`npm run sitemap`, { silent: true })
 }
 
 // Apply migrations
 if (pkg.scripts?.migrate) {
-  run(`npm run migrate`)
+  run(`npm run migrate`, { silent: true })
 }
 
 // Move stuff into place
@@ -190,7 +195,7 @@ process.chdir('current')
 
 // Ping servers
 if (config.ping && pkg.scripts?.ping) {
-  run(`npm run ping`)
+  run(`npm run ping`, { silent: true })
 }
 
 console.log('\nDeployed.\n')
