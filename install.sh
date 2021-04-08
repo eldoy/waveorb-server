@@ -76,25 +76,6 @@ printf "deb https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx 
 apt-get update
 until apt-get install -y nginx python-certbot-nginx; do sleep 1; done
 
-# Install brotli
-until apt-get install -y libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev; do sleep 1; done
-
-wget https://nginx.org/download/nginx-1.19.7.tar.gz
-tar zxvf nginx-1.19.7.tar.gz
-rm nginx-1.19.7.tar.gz
-
-git clone https://github.com/google/ngx_brotli.git
-cd $HOME/ngx_brotli && git submodule update --init
-cd $HOME/nginx-1.19.7
-./configure --with-compat --add-dynamic-module=../ngx_brotli
-make modules
-cp objs/*.so /etc/nginx/modules
-chmod 644 /etc/nginx/modules/*.so
-
-cd $HOME
-rm -rf $HOME/ngx_brotli
-rm -rf $HOME/nginx-1.19.7
-
 # Install default files
 git clone --depth 1 https://github.com/eldoy/waveorb-server.git
 base=$HOME/waveorb-server/config
