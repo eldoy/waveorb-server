@@ -15,4 +15,6 @@ redirects:
 Can build be done without server? Just load app, run actions. Can use test lib for this?
 
 ### Remove email server if needed
+systemctl stop exim4
+systemctl disable exim4
 apt-get remove exim4 exim4-base exim4-config exim4-daemon-light
