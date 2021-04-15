@@ -81,7 +81,7 @@ git clone --depth 1 https://github.com/eldoy/waveorb-server.git
 base=$HOME/waveorb-server/config
 cp $base/etc/ssh/* /etc/ssh
 cp $base/etc/nginx/nginx.conf /etc/nginx
-cp $base/etc/nginx/conf.d/0.conf /etc/nginx/conf.d
+cp $base/etc/nginx/default.conf /etc/nginx
 cp $base/etc/systemd/system/*.service /etc/systemd/system
 cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/.vimrc $HOME
