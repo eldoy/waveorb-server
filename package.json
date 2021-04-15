@@ -2,7 +2,6 @@
   "name": "waveorb-server",
   "version": "0.1.0",
   "description": "Waveorb server",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/eldoy/waveorb-server"
