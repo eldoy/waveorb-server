@@ -80,10 +80,8 @@ until apt-get install -y nginx python-certbot-nginx; do sleep 1; done
 git clone --depth 1 https://github.com/eldoy/waveorb-server.git
 base=$HOME/waveorb-server/config
 cp $base/etc/ssh/* /etc/ssh
-cp $base/etc/nginx/nginx.conf /etc/nginx
-cp $base/etc/nginx/default.conf /etc/nginx
+cp $base/etc/nginx/*.conf /etc/nginx
 cp $base/etc/systemd/system/*.service /etc/systemd/system
-cp $base/usr/share/nginx/html/*.html /usr/share/nginx/html
 cp $base/.vimrc $HOME
 cp $base/.zshrc $HOME
 cd $HOME/waveorb-server && npm i
