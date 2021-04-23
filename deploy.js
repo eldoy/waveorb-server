@@ -66,12 +66,12 @@ if (typeof config.domains == 'string') {
 
 // Install packages
 console.log('Installing npm packages...')
-run(`npm i`, { silent: true })
+run(`npm i`)
 
 // Build
 if (pkg.scripts?.build) {
   console.log('Building app...')
-  run(`npm run build`, { silent: true })
+  run(`npm run build`)
 }
 
 const { proxy, basicauth } = config
@@ -153,12 +153,12 @@ if (jobs.length) {
 
 // Build sitemap
 if (config.sitemap && pkg.scripts?.sitemap) {
-  run(`npm run sitemap`, { silent: true })
+  run(`npm run sitemap`)
 }
 
 // Apply migrations
 if (pkg.scripts?.migrate) {
-  run(`npm run migrate`, { silent: true })
+  run(`npm run migrate`)
 }
 
 // Move stuff into place
@@ -195,7 +195,7 @@ process.chdir('current')
 
 // Ping servers
 if (config.ping && pkg.scripts?.ping) {
-  run(`npm run ping`, { silent: true })
+  run(`npm run ping`)
 }
 
 console.log('\nDeployed.\n')
