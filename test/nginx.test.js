@@ -12,8 +12,7 @@ const config = {
         '^/nils.html$ http://example.no'
       ]
     }
-  ],
-
+  ]
 }
 
 const name = 'hello'
@@ -23,7 +22,7 @@ const main = names.split(' ')[0]
 const proxy = config.proxy || 'http://localhost:5000'
 const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
 const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
-const dir = `/root/apps/${name}/current/dist`
+const dist = `/root/apps/${name}/current/dist`
 const redirects = domain.redirects || []
 
 const template = nginx({
@@ -32,7 +31,8 @@ const template = nginx({
   proxy,
   cert,
   key,
-  dir,
-  redirects
+  dist,
+  redirects,
+  ssr: true
 })({ ssl: true })
 console.log(template)
