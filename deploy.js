@@ -74,7 +74,7 @@ if (pkg.scripts?.build) {
   run(`npm run build`)
 }
 
-const { proxy, basicauth } = config
+const { proxy, basicauth, ssr } = config
 const dist = `/root/apps/${name}/current/dist`
 const data = `/root/apps/${name}/data`
 
@@ -109,7 +109,7 @@ for (const domain of config.domains) {
   const redirects = domain.redirects || []
 
   // Set up nginx config template
-  const template = nginx({ names, main, proxy, cert, key, dist, data, redirects, basicauth })
+  const template = nginx({ names, main, proxy, cert, key, dist, data, redirects, basicauth, ssr })
 
   const nginxName = main.replace(/\./g, '-')
   const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
