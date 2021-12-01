@@ -18,3 +18,6 @@ Can build be done without server? Just load app, run actions. Can use test lib f
 systemctl stop exim4
 systemctl disable exim4
 apt-get remove exim4 exim4-base exim4-config exim4-daemon-light
+
+### Install wildcard certificate
+certbot certonly --manual -d '*.7i.no' --agree-tos --no-bootstrap --manual-public-ip-logging-ok --preferred-challenges dns-01 --no-eff-email --server https://acme-v02.api.letsencrypt.org/directory
