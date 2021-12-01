@@ -102,8 +102,9 @@ for (const domain of config.domains) {
 
   console.log(`Processsing ${main}...`)
 
-  const cert = domain.cert || `/etc/letsencrypt/live/${main}/fullchain.pem`
-  const key = domain.key || `/etc/letsencrypt/live/${main}/privkey.pem`
+  const certDir = main.replace('*.', '')
+  const cert = domain.cert || `/etc/letsencrypt/live/${certDir}/fullchain.pem`
+  const key = domain.key || `/etc/letsencrypt/live/${certDir}/privkey.pem`
   const ssl = domain.ssl !== false
   const dryRun = !!domain.dryRun
   const redirects = domain.redirects || []
@@ -111,7 +112,7 @@ for (const domain of config.domains) {
   // Set up nginx config template
   const template = nginx({ names, main, proxy, cert, key, dist, data, redirects, basicauth, ssr })
 
-  const nginxName = main.replace(/\./g, '-')
+  const nginxName = main.replace(/\./g, '-').replace('*.', '')
   const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
 
   // Set up SSL certificate if it doesn't exist
