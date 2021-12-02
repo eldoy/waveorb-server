@@ -112,7 +112,7 @@ for (const domain of config.domains) {
   // Set up nginx config template
   const template = nginx({ names, main, proxy, cert, key, dist, data, redirects, basicauth, ssr })
 
-  const nginxName = main.replace(/\./g, '-').replace(/\*\./g, '')
+  const nginxName = main.replace(/\*\./g, '').replace(/\./g, '-')
   const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
 
   // Set up SSL certificate if it doesn't exist
