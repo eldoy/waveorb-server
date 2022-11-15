@@ -62,7 +62,7 @@ until apt-get install -y zsh; do sleep 1; done
 chsh -s /usr/bin/zsh root
 
 # Install NodeJS
-curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
 until apt-get install -y nodejs; do sleep 1; done
 
 # Update npm
@@ -74,7 +74,7 @@ apt-key add nginx_signing.key
 rm nginx_signing.key
 printf "deb https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \ndeb-src https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \n" >> /etc/apt/sources.list.d/nginx_mainline.list
 apt-get update
-until apt-get install -y nginx python3-certbot-nginx; do sleep 1; done
+until apt-get install -y nginx python-certbot-nginx; do sleep 1; done
 
 # Install default files
 git clone --depth 1 https://github.com/eldoy/waveorb-server.git
