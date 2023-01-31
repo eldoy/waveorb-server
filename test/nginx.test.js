@@ -35,4 +35,5 @@ const template = nginx({
   redirects,
   ssr: true
 })({ ssl: true })
+
 console.log(template)

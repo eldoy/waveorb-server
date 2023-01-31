@@ -1,5 +1,15 @@
 const fs = require('fs')
-const { rmdir, mkdir, run, exist, read, write, get, exit, regexp } = require('extras')
+const {
+  rmdir,
+  mkdir,
+  run,
+  exist,
+  read,
+  write,
+  get,
+  exit,
+  regexp
+} = require('extras')
 const nginx = require('./lib/nginx.js')
 
 const repo = process.argv[2]
@@ -13,7 +23,11 @@ let name = process.argv[3]
 if (!name) {
   name = repo.split('/').reverse()[0]
 }
-name = name.trim().replace(' ', '_').toLowerCase().replace(/\.git$/, '')
+name = name
+  .trim()
+  .replace(' ', '_')
+  .toLowerCase()
+  .replace(/\.git$/, '')
 
 process.chdir('/root')
 
@@ -81,7 +95,7 @@ const data = `/root/apps/${name}/data`
 // For each domain
 for (const domain of config.domains) {
   // Support string for domain
-  if (typeof domain == 'string' ) {
+  if (typeof domain == 'string') {
     domain = { names: domain }
   }
 
@@ -110,14 +124,24 @@ for (const domain of config.domains) {
   const redirects = domain.redirects || []
 
   // Set up nginx config template
-  const template = nginx({ names, main, proxy, cert, key, dist, data, redirects, basicauth, ssr })
+  const template = nginx({
+    names,
+    main,
+    proxy,
+    cert,
+    key,
+    dist,
+    data,
+    redirects,
+    basicauth,
+    ssr
+  })
 
   const nginxName = main.replace(/\*\./g, '').replace(/\./g, '-')
   const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
 
   // Set up SSL certificate if it doesn't exist
   if (ssl && !exist(cert)) {
-
     // Need plain http to validate domain
     write(nginxConf, template({ ssl: false }))
     run(`systemctl restart nginx`)
@@ -126,9 +150,14 @@ for (const domain of config.domains) {
       ? `--email ${config.email}`
       : `--register-unsafely-without-email`
 
-    const domainOption = names.split(' ').map(n => `-d ${n}`).join(' ')
+    const domainOption = names
+      .split(' ')
+      .map((n) => `-d ${n}`)
+      .join(' ')
 
-    const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${dryRun ? '--dry-run ' : ''}${emailOption} ${domainOption}`
+    const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${
+      dryRun ? '--dry-run ' : ''
+    }${emailOption} ${domainOption}`
     console.log(certbotCommand)
 
     // Install certificate
