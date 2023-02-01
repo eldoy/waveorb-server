@@ -46,6 +46,9 @@ until apt-get install -y mongodb-org; do sleep 1; done
 # Install redis
 until apt-get install -y redis-server; do sleep 1; done
 
+# Git configuration
+git config --global pull.rebase false
+
 # Optional configuration
 if [ -n "$GIT_CONFIG_NAME" ]; then
   echo "Setting global git user name to $GIT_CONFIG_NAME"
