@@ -11,6 +11,7 @@ const {
   regexp
 } = require('extras')
 const nginx = require('./lib/nginx.js')
+const util = require('./lib/util.js')
 
 const repo = process.argv[2]
 if (!repo) {
@@ -138,7 +139,7 @@ for (let domain of config.domains) {
     sitemapdir
   })
 
-  const nginxConf = `/etc/nginx/conf.d/${name}.conf`
+  const nginxConf = util.nginxName(main, name)
 
   // Set up SSL certificate if it doesn't exist
   if (ssl && !exist(cert)) {

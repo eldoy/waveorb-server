@@ -1,4 +1,5 @@
 const { exist, read, run } = require('extras')
+const util = require('./lib/util.js')
 
 const name = process.argv[2]
 
@@ -59,7 +60,7 @@ run(`systemctl disable ${service}`)
 
 for (const domain of domains) {
   // Remove nginx config
-  const nginxConf = `/etc/nginx/conf.d/${name}.conf`
+  const nginxConf = util.nginxName(domain, name)
 
   run(`rm ${nginxConf}`)
 
