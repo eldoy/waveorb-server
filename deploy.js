@@ -138,8 +138,7 @@ for (let domain of config.domains) {
     sitemapdir
   })
 
-  const nginxName = main.replace(/\*\./g, '').replace(/\./g, '-')
-  const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
+  const nginxConf = `/etc/nginx/conf.d/${name}.conf`
 
   // Set up SSL certificate if it doesn't exist
   if (ssl && !exist(cert)) {

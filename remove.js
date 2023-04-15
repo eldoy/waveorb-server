@@ -59,8 +59,7 @@ run(`systemctl disable ${service}`)
 
 for (const domain of domains) {
   // Remove nginx config
-  const nginxName = domain.replace(/\*\./g, '').replace(/\./g, '-')
-  const nginxConf = `/etc/nginx/conf.d/${nginxName}.conf`
+  const nginxConf = `/etc/nginx/conf.d/${name}.conf`
 
   run(`rm ${nginxConf}`)
 
