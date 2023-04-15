@@ -23,6 +23,7 @@ alias restart="systemctl restart"
 alias enable="systemctl enable"
 alias disable="systemctl disable"
 alias reload="systemctl daemon-reload"
+alias list="systemctl --type=service"
 
 # Journalctl short cuts
 alias j="journalctl -e"
