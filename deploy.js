@@ -93,7 +93,7 @@ const dist = `/root/apps/${name}/current/dist`
 const data = `/root/apps/${name}/data`
 
 // For each domain
-for (const domain of config.domains) {
+for (let domain of config.domains) {
   // Support string for domain
   if (typeof domain == 'string') {
     domain = { names: domain }
