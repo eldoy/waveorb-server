@@ -41,7 +41,7 @@ export GIT_CONFIG_EMAIL="your@git.email"
 Installation of wildcard domains can be done manually like this:
 
 ```
-certbot certonly --manual --preferred-challenges=dns --agree-tos --no-eff-email --register-unsafely-without-email -d "*.example.com"
+certbot certonly --manual --preferred-challenges=dns --agree-tos --no-eff-email --register-unsafely-without-email -d "example.com" -d "*.example.com"
 ```
 
 MIT Licensed. Enjoy!
