@@ -36,6 +36,12 @@ export GIT_CONFIG_NAME="Your name"
 export GIT_CONFIG_EMAIL="your@git.email"
 ```
 
-When all is done your are ready to deploy your waveorb application.
+### Wildcard domains
+
+Installation of wildcard domains can be done manually like this:
+
+```
+certbot certonly --manual --preferred-challenges=dns --agree-tos --no-eff-email --register-unsafely-without-email -d "*.example.com"
+```
 
 MIT Licensed. Enjoy!
