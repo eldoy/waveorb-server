@@ -46,6 +46,10 @@ if (!exist('tmp')) {
 
 process.chdir('tmp')
 
+if (process.env.WAVEORB_DEPLOY_ENV) {
+  write('.env', process.env.WAVEORB_DEPLOY_ENV)
+}
+
 const revision = get('git rev-parse --short HEAD')
 const branch = get(`git rev-parse --abbrev-ref HEAD`)
 console.log(`Revision ${revision} on ${branch} branch`)
