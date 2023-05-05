@@ -32,7 +32,7 @@ name = name
 
 process.chdir('/root')
 
-// Make sure /root/apps/docs/{shared,log} exists or create it
+// Make sure /root/apps/docs/{data,log} exists or create it
 mkdir(`apps/${name}/data`)
 mkdir(`apps/${name}/log`)
 
