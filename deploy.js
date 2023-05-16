@@ -13,6 +13,8 @@ const {
 const nginx = require('./lib/nginx.js')
 const util = require('./lib/util.js')
 
+const env = process.env.WAVEORB_DEPLOY_ENV
+
 const repo = process.argv[2]
 if (!repo) {
   exit(`Repository URL is missing!`)
@@ -46,8 +48,9 @@ if (!exist('tmp')) {
 
 process.chdir('tmp')
 
-if (process.env.WAVEORB_DEPLOY_ENV) {
-  write('.env', process.env.WAVEORB_DEPLOY_ENV)
+// Write env to .env file
+if (env) {
+  write('.env', env)
 }
 
 const revision = get('git rev-parse --short HEAD')
@@ -60,10 +63,13 @@ if (exist(`/root/apps/${name}/${revision}`)) {
 }
 
 // Find waveorb file
-if (!exist(`waveorb.json`)) {
+const configName = ['waveorb', env, 'json'].filter(Boolean).join('.')
+if (!exist(configName)) {
   exit('Waveorb file missing!')
 }
-const config = read(`waveorb.json`)
+const config = read(configName)
+
+console.log(`Using config:\n${config}`)
 
 if (!config.domains || !config.domains.length) {
   exit('Config domains field is missing!')
