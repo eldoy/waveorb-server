@@ -69,7 +69,8 @@ if (!exist(configName)) {
 }
 const config = read(configName)
 
-console.log(`Using config:\n${config}`)
+console.log(`Using config:`)
+console.log(config)
 
 if (!config.domains || !config.domains.length) {
   exit('Config domains field is missing!')
