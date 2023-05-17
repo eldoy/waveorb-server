@@ -1,4 +1,4 @@
-const { exist, read, run } = require('extras')
+const { exist, run, env } = require('extras')
 const util = require('./lib/util.js')
 
 const name = process.argv[2]
@@ -17,8 +17,7 @@ if (!exist(file)) {
   process.exit()
 }
 
-const config = read(`/root/apps/${name}/current/waveorb.json`)
-
+const config = env(`/root/apps/${name}/current/waveorb.json`)
 console.log(config)
 
 if (!config.domains) {

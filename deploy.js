@@ -8,12 +8,13 @@ const {
   write,
   get,
   exit,
-  regexp
+  regexp,
+  env
 } = require('extras')
 const nginx = require('./lib/nginx.js')
 const util = require('./lib/util.js')
 
-const env = process.env.WAVEORB_DEPLOY_ENV
+const mode = process.env.WAVEORB_DEPLOY_ENV
 
 const repo = process.argv[2]
 if (!repo) {
@@ -48,9 +49,9 @@ if (!exist('tmp')) {
 
 process.chdir('tmp')
 
-// Write env to .env file
-if (env) {
-  write('.env', env)
+// Write mode to .env file
+if (mode) {
+  write('.env', mode)
 }
 
 const revision = get('git rev-parse --short HEAD')
@@ -62,12 +63,8 @@ if (exist(`/root/apps/${name}/${revision}`)) {
   exit('Revision already exists!\n\nPlease push an update and deploy again.\n')
 }
 
-// Find waveorb file
-const configName = ['waveorb', env, 'json'].filter(Boolean).join('.')
-if (!exist(configName)) {
-  exit('Waveorb file missing!')
-}
-const config = read(configName)
+// Find waveorb config file
+const config = env('waveorb.json', mode)
 
 console.log(`Using config:`)
 console.log(config)
