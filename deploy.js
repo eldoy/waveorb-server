@@ -15,6 +15,7 @@ const nginx = require('./lib/nginx.js')
 const util = require('./lib/util.js')
 
 const mode = process.env.WAVEORB_DEPLOY_ENV
+const from = process.env.WAVEORB_DEPLOY_BRANCH
 
 const repo = process.argv[2]
 if (!repo) {
@@ -41,7 +42,8 @@ mkdir(`apps/${name}/log`)
 
 process.chdir(`apps/${name}`)
 rmdir('tmp')
-run(`git clone ${repo} --depth 1 tmp`)
+const remote = from ? ` --branch ${from}` : ''
+run(`git clone ${repo} --depth 1${remote} tmp`)
 
 if (!exist('tmp')) {
   exit(`Can't clone repo: ${repo}!`)
