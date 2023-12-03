@@ -99,7 +99,7 @@ if (pkg.scripts?.build) {
   run(`npm run build`)
 }
 
-const { proxy, basicauth, ssr, sitemapdir } = config
+const { proxy, basicauth, ssr, sitemapdir, errordir } = config
 const dist = `/root/apps/${name}/current/dist`
 const data = `/root/apps/${name}/data`
 
@@ -146,7 +146,8 @@ for (let domain of config.domains) {
     redirects,
     basicauth,
     ssr,
-    sitemapdir
+    sitemapdir,
+    errordir
   })
 
   const nginxConf = util.nginxName(main, name)
