@@ -41,7 +41,7 @@ process.chdir('/root')
 mkdir(`apps/${name}/data`)
 mkdir(`apps/${name}/log`)
 
-process.chdir(`apps/${name}`)
+process.chdir(`/root/apps/${name}`)
 rmdir('tmp')
 const remote = from ? ` --branch ${from}` : ''
 run(`git clone ${repo} --depth 1${remote} tmp`)
@@ -205,7 +205,7 @@ if (pkg.scripts?.migrate) {
 }
 
 // Move stuff into place
-process.chdir('..')
+process.chdir(`/root/apps/${name}`)
 run(`mv tmp ${revision}`)
 
 // Record previous revision
@@ -234,7 +234,7 @@ if (proxy) {
   run(`systemctl disable app@${name}`)
 }
 
-process.chdir('current')
+process.chdir(`/root/apps/${name}/current`)
 
 // Ping servers
 if (config.ping && pkg.scripts?.ping) {
