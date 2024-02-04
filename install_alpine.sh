@@ -9,7 +9,7 @@ echo "NODE_ENV=production" >> /etc/environment
 apk update && apk upgrade && sync
 
 # Install packages
-apk add zsh nodejs npm nginx git ip6tables ufw certbot certbot-nginx
+apk add zsh openssh nodejs npm nginx git ip6tables ufw certbot certbot-nginx
 
 # Update npm
 npm install -g npm
