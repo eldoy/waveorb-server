@@ -16,7 +16,6 @@ const util = require('./lib/util.js')
 
 const mode = process.env.WAVEORB_DEPLOY_ENV
 const from = process.env.WAVEORB_DEPLOY_BRANCH
-const appdir = process.env.WAVEORB_APP_DIR || ''
 
 const repo = process.argv[2]
 if (!repo) {
@@ -50,7 +49,7 @@ if (!exist('tmp')) {
   exit(`Can't clone repo: ${repo}!`)
 }
 
-process.chdir(`tmp${appdir}`)
+process.chdir(`tmp`)
 
 // Write mode to .env file
 if (mode) {
@@ -212,7 +211,7 @@ run(`mv tmp ${revision}`)
 const prev = exist('current') ? fs.readlinkSync('current') : ''
 
 // Symlink to new revision
-run(`ln -sfn ${revision}${appdir} current`)
+run(`ln -sfn ${revision} current`)
 
 if (prev) {
   console.log(`Removing previous revision ${prev}`)
