@@ -17,6 +17,8 @@ const util = require('./lib/util.js')
 const mode = process.env.WAVEORB_DEPLOY_ENV
 const from = process.env.WAVEORB_DEPLOY_BRANCH
 
+const APPTYPES = { web: 'web', service: 'service', lib: 'lib' }
+
 const repo = process.argv[2]
 if (!repo) {
   exit(`Repository URL is missing!`)
@@ -99,109 +101,124 @@ if (pkg.scripts?.build) {
   run(`npm run build`)
 }
 
-const { proxy, basicauth, ssr, sitemapdir, errordir, redirectmain } = config
+const {
+  proxy,
+  basicauth,
+  ssr,
+  sitemapdir,
+  errordir,
+  redirectmain,
+  apptype = APPTYPES.web
+} = config
+
+if (!APPTYPES[apptype]) {
+  exit(`App type must be one of ${Object.keys(APPTYPES).join()}`)
+}
+
 const dist = `/root/apps/${name}/current/dist`
 const data = `/root/apps/${name}/data`
 
-// For each domain
-for (let domain of config.domains) {
-  // Support string for domain
-  if (typeof domain == 'string') {
-    domain = { names: domain }
+if (apptype == APPTYPES.web) {
+  // For each domain
+  for (let domain of config.domains) {
+    // Support string for domain
+    if (typeof domain == 'string') {
+      domain = { names: domain }
+    }
+
+    // Make sure nginx config for this app exists or create it
+    // If create, also add Let's Encrypt certificate
+    if (!domain.names) {
+      exit('Domain names field is missing!')
+    }
+
+    // Skip if it's an IP address, doesn't need nginx config
+    if (regexp.ip.test(domain.names)) {
+      console.log('Found ip address, skipping...')
+      continue
+    }
+
+    const names = domain.names.replace(/\s+/, ' ')
+    const main = names.split(' ')[0]
+
+    console.log(`Processsing ${main}...`)
+
+    const certDir = main.replace(/\*\./g, '')
+    const cert = domain.cert || `/etc/letsencrypt/live/${certDir}/fullchain.pem`
+    const key = domain.key || `/etc/letsencrypt/live/${certDir}/privkey.pem`
+    const ssl = domain.ssl !== false
+    const dryRun = !!domain.dryRun
+    const redirects = domain.redirects || []
+
+    // Set up nginx config template
+    const template = nginx({
+      names,
+      main,
+      proxy,
+      cert,
+      key,
+      dist,
+      data,
+      redirects,
+      basicauth,
+      ssr,
+      sitemapdir,
+      errordir,
+      redirectmain
+    })
+
+    const nginxConf = util.nginxName(main, name)
+
+    // Set up SSL certificate if it doesn't exist
+    if (ssl && !exist(cert)) {
+      // Need plain http to validate domain
+      write(nginxConf, template({ ssl: false }))
+      run(`systemctl restart nginx`)
+
+      const emailOption = config.email
+        ? `--email ${config.email}`
+        : `--register-unsafely-without-email`
+
+      const domainOption = names
+        .split(' ')
+        .map((n) => `-d ${n}`)
+        .join(' ')
+
+      const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${
+        dryRun ? '--dry-run ' : ''
+      }${emailOption} ${domainOption}`
+      console.log(certbotCommand)
+
+      // Install certificate
+      run(certbotCommand)
+    }
+
+    // Write config based on preference
+    write(nginxConf, template({ ssl }))
   }
 
-  // Make sure nginx config for this app exists or create it
-  // If create, also add Let's Encrypt certificate
-  if (!domain.names) {
-    exit('Domain names field is missing!')
+  if (basicauth) {
+    const [user, password] = basicauth.split(':')
+    run(`htpasswd -b -c ${data}/.htpasswd ${user} ${password}`)
   }
 
-  // Skip if it's an IP address, doesn't need nginx config
-  if (regexp.ip.test(domain.names)) {
-    console.log('Found ip address, skipping...')
-    continue
+  // Cron jobs
+  const { jobs = [] } = config
+  if (jobs.length) {
+    const existing = run(`crontab -l`).stdout.trim().split('\n')
+    const all = [...new Set(existing.concat(jobs))].join('\n')
+    if (all) run(`echo "${all}" | crontab -`)
   }
 
-  const names = domain.names.replace(/\s+/, ' ')
-  const main = names.split(' ')[0]
-
-  console.log(`Processsing ${main}...`)
-
-  const certDir = main.replace(/\*\./g, '')
-  const cert = domain.cert || `/etc/letsencrypt/live/${certDir}/fullchain.pem`
-  const key = domain.key || `/etc/letsencrypt/live/${certDir}/privkey.pem`
-  const ssl = domain.ssl !== false
-  const dryRun = !!domain.dryRun
-  const redirects = domain.redirects || []
-
-  // Set up nginx config template
-  const template = nginx({
-    names,
-    main,
-    proxy,
-    cert,
-    key,
-    dist,
-    data,
-    redirects,
-    basicauth,
-    ssr,
-    sitemapdir,
-    errordir,
-    redirectmain
-  })
-
-  const nginxConf = util.nginxName(main, name)
-
-  // Set up SSL certificate if it doesn't exist
-  if (ssl && !exist(cert)) {
-    // Need plain http to validate domain
-    write(nginxConf, template({ ssl: false }))
-    run(`systemctl restart nginx`)
-
-    const emailOption = config.email
-      ? `--email ${config.email}`
-      : `--register-unsafely-without-email`
-
-    const domainOption = names
-      .split(' ')
-      .map((n) => `-d ${n}`)
-      .join(' ')
-
-    const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${
-      dryRun ? '--dry-run ' : ''
-    }${emailOption} ${domainOption}`
-    console.log(certbotCommand)
-
-    // Install certificate
-    run(certbotCommand)
+  // Build sitemap
+  if (config.sitemap && pkg.scripts?.sitemap) {
+    run(`npm run sitemap`)
   }
 
-  // Write config based on preference
-  write(nginxConf, template({ ssl }))
-}
-
-if (basicauth) {
-  const [user, password] = basicauth.split(':')
-  run(`htpasswd -b -c ${data}/.htpasswd ${user} ${password}`)
-}
-
-// Cron jobs
-const { jobs = [] } = config
-if (jobs.length) {
-  const existing = run(`crontab -l`).stdout.trim().split('\n')
-  const all = [...new Set(existing.concat(jobs))].join('\n')
-  if (all) run(`echo "${all}" | crontab -`)
-}
-
-// Build sitemap
-if (config.sitemap && pkg.scripts?.sitemap) {
-  run(`npm run sitemap`)
-}
-
-// Apply migrations
-if (pkg.scripts?.migrate) {
-  run(`npm run migrate`)
+  // Apply migrations
+  if (pkg.scripts?.migrate) {
+    run(`npm run migrate`)
+  }
 }
 
 // Move stuff into place
@@ -219,26 +236,28 @@ if (prev) {
   rmdir(prev)
 }
 
-// Reload services
-run(`systemctl daemon-reload`)
+if (apptype == APPTYPES.web) {
+  // Reload services
+  run(`systemctl daemon-reload`)
 
-// Restart nginx
-run(`systemctl restart nginx`)
+  // Restart nginx
+  run(`systemctl restart nginx`)
 
-// Start app service if proxy
-if (proxy) {
-  run(`systemctl enable app@${name}`)
-  run(`systemctl restart app@${name}`)
-} else {
-  run(`systemctl stop app@${name}`)
-  run(`systemctl disable app@${name}`)
-}
+  // Start app service if proxy
+  if (proxy) {
+    run(`systemctl enable app@${name}`)
+    run(`systemctl restart app@${name}`)
+  } else {
+    run(`systemctl stop app@${name}`)
+    run(`systemctl disable app@${name}`)
+  }
 
-process.chdir(`/root/apps/${name}/current`)
+  process.chdir(`/root/apps/${name}/current`)
 
-// Ping servers
-if (config.ping && pkg.scripts?.ping) {
-  run(`npm run ping`)
+  // Ping servers
+  if (config.ping && pkg.scripts?.ping) {
+    run(`npm run ping`)
+  }
 }
 
 console.log('\nDeployed.\n')
