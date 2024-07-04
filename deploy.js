@@ -93,6 +93,7 @@ if (typeof config.domains == 'string') {
 
 // Install packages
 console.log('Installing npm packages...')
+run('rm package-lock.json')
 run(`npm i --omit=dev`)
 
 // Build
