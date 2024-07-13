@@ -16,9 +16,9 @@ Made for [the Waveorb Web App Development Framework.](https://waveorb.com)
 
 Create a server on for example [Vultr VPS](https://vultr.com). Add your SSH key there so you can ssh to it without a password.
 
-Choose Debian 11 as operating system. Enable private networking if you need the machine to be connected to from other machines.
+Choose Ubuntu 22.04 as operating system. Enable private networking if you need the machine to be connected to from other machines.
 
-_For Debian 10, use the file `install_deb10.sh`._
+_For Debian 11, use the file `install_deb11.sh`._
 
 Once it's running, log in to your server via SSH (`ssh root@ip-address`) and run this command:
 ```sh

@@ -1,31 +1,28 @@
 # Change the welcome message
-printf 'ᚠᚢᚦᚬᚱᚴᚼᚾᛁᛅᛦᛋᛏᛒᛘᛚ\n' > /etc/motd
+printf "ᚠᚢᚦᚬᚱᚴᚼᚾᛁᛅᛦᛋᛏᛒᛘᛚ\n" > /etc/motd
 
 # Set environment
-echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
-echo 'EDITOR=vim' >> /etc/environment
-echo 'NODE_ENV=production' >> /etc/environment
-
-# Disable interactive restart
-sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+echo "EDITOR=vim" >> /etc/environment
+echo "NODE_ENV=production" >> /etc/environment
 
 # Install swap file
 fallocate -l 4G /swapfile
 chmod 600 /swapfile
 mkswap /swapfile
 swapon /swapfile
-echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
 
 # Set swappiness
 sysctl vm.swappiness=10
-echo 'vm.swappiness=10' >> /etc/sysctl.conf
+echo "vm.swappiness=10" >> /etc/sysctl.conf
 
 # Set locale
-echo 'UTC' > /etc/timezone
-dpkg-reconfigure -f noninteractive tzdata
-sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-echo 'LANG=en_US.UTF-8' > /etc/default/locale
-dpkg-reconfigure --frontend=noninteractive locales
+echo "UTC" > /etc/timezone && \
+dpkg-reconfigure -f noninteractive tzdata && \
+sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+echo 'LANG=en_US.UTF-8' > /etc/default/locale && \
+dpkg-reconfigure --frontend=noninteractive locales && \
 update-locale LANG=en_US.UTF-8
 
 # Update
@@ -39,15 +36,14 @@ until apt-get install -y build-essential rsync certbot ufw gnupg2 git vim wget a
 until apt-get install -y python3-pip tree; do sleep 1; done
 pip3 install jc
 
-# Install MongoDB
+# Install mongodb
 mkdir -p /data/db
-curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
-echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | \
-sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 apt-get update
 until apt-get install -y mongodb-org; do sleep 1; done
 
-# Install Redis
+# Install redis
 until apt-get install -y redis-server; do sleep 1; done
 
 # Git configuration
@@ -69,16 +65,18 @@ until apt-get install -y zsh; do sleep 1; done
 chsh -s /usr/bin/zsh root
 
 # Install NodeJS
-curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 until apt-get install -y nodejs; do sleep 1; done
 
 # Update npm
 npm install -g npm
 
-# Install NGINX
+# Install nginx package
 wget https://nginx.org/keys/nginx_signing.key
 apt-key add nginx_signing.key
 rm nginx_signing.key
+printf "deb https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \ndeb-src https://nginx.org/packages/mainline/debian/ `lsb_release -sc` nginx \n" >> /etc/apt/sources.list.d/nginx_mainline.list
+apt-get update
 until apt-get install -y nginx python3-certbot-nginx; do sleep 1; done
 
 # Install default files
