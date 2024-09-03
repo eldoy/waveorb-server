@@ -70,10 +70,8 @@ until apt-get install -y zsh; do sleep 1; done
 chsh -s /usr/bin/zsh root
 
 # Install NodeJS
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+until apt-get install -y nodejs; do sleep 1; done
 
 # Update npm
 npm install -g npm
@@ -94,9 +92,6 @@ cp $base/.vimrc $HOME
 cp $base/.zshrc $HOME
 cd $HOME/waveorb-server && npm i
 cd $HOME
-
-# Load zsh through ssh
-echo 'source .zshrc' > .zshenv
 
 # Enable and start services
 systemctl daemon-reload
