@@ -1,16 +1,5 @@
 const fs = require('fs')
-const {
-  rmdir,
-  mkdir,
-  run,
-  exist,
-  read,
-  write,
-  get,
-  exit,
-  regexp,
-  env
-} = require('extras')
+const extras = require('extras')
 const nginx = require('./lib/nginx.js')
 const util = require('./lib/util.js')
 
@@ -21,9 +10,9 @@ const APPTYPES = { web: 'web', service: 'service', lib: 'lib' }
 
 const repo = process.argv[2]
 if (!repo) {
-  exit(`Repository URL is missing!`)
+  extras.exit(`Repository URL is missing!`)
 }
-console.log(`Deploying repository ${repo}`)
+console.info(`Deploying repository ${repo}`)
 
 // Extract name
 let name = process.argv[3]
@@ -39,49 +28,52 @@ name = name
 process.chdir('/root')
 
 // Make sure /root/apps/docs/{data,log} exists or create it
-mkdir(`apps/${name}/data`)
-mkdir(`apps/${name}/log`)
+extras.exec(`mkdir -p apps/${name}/data`)
+extras.exec(`mkdir -p apps/${name}/log`)
 
 process.chdir(`/root/apps/${name}`)
-rmdir('tmp')
-const remote = from ? ` --branch ${from}` : ''
-run(`git clone ${repo} --depth 1${remote} tmp`)
+extras.exec(`rm -rf ${tmp}`)
 
-if (!exist('tmp')) {
-  exit(`Can't clone repo: ${repo}!`)
+const remote = from ? ` --branch ${from}` : ''
+extras.exec(`git clone ${repo} --depth 1${remote} tmp`)
+
+if (!extras.exist('tmp')) {
+  extras.exit(`Can't clone repo: ${repo}!`)
 }
 
 process.chdir(`tmp`)
 
 // Write mode to .env file
 if (mode) {
-  write('.env', mode)
+  extras.write('.env', mode)
 }
 
-const revision = get('git rev-parse --short HEAD')
-const branch = get(`git rev-parse --abbrev-ref HEAD`)
-console.log(`Revision ${revision} on ${branch} branch`)
+const revision = extras.exec('git rev-parse --short HEAD', { silent: true })
+const branch = extras.exec(`git rev-parse --abbrev-ref HEAD`, { silent: true })
+console.info(`Revision ${revision} on ${branch} branch`)
 
 // Fail if revision already exists
-if (exist(`/root/apps/${name}/${revision}`)) {
-  exit('Revision already exists!\n\nPlease push an update and deploy again.\n')
+if (extras.exist(`/root/apps/${name}/${revision}`)) {
+  extras.exit(
+    'Revision already exists!\n\nPlease push an update and deploy again.\n'
+  )
 }
 
 // Find waveorb config file
-const config = env('waveorb.json', mode)
+const config = extras.env('waveorb.json', mode)
 
-console.log(`Using config:`)
-console.log(config)
+console.info(`Using config:`)
+console.info(config)
 
 if (!config.domains || !config.domains.length) {
-  exit('Config domains field is missing!')
+  extras.exit('Config domains field is missing!')
 }
 
 // Find package.json file
-if (!exist(`package.json`)) {
-  exit('File package.json is missing!')
+if (!extras.exist(`package.json`)) {
+  extras.exit('File package.json is missing!')
 }
-const pkg = read(`package.json`)
+const pkg = extras.read(`package.json`)
 
 // Allow simple domain setting
 if (typeof config.domains == 'string') {
@@ -92,13 +84,13 @@ if (typeof config.domains == 'string') {
 }
 
 // Install packages
-console.log('Installing npm packages...')
-run(`npm i --omit=dev`)
+console.info('Installing npm packages...')
+extras.exec(`npm i --omit=dev`)
 
 // Build
 if (pkg.scripts?.build) {
-  console.log('Building app...')
-  run(`npm run build`)
+  console.info('Building app...')
+  extras.exec(`npm run build`)
 }
 
 const {
@@ -112,7 +104,7 @@ const {
 } = config
 
 if (!APPTYPES[apptype]) {
-  exit(`App type must be one of ${Object.keys(APPTYPES).join()}`)
+  extras.exit(`App type must be one of ${Object.keys(APPTYPES).join()}`)
 }
 
 const dist = `/root/apps/${name}/current/dist`
@@ -129,19 +121,19 @@ if (apptype == APPTYPES.web) {
     // Make sure nginx config for this app exists or create it
     // If create, also add Let's Encrypt certificate
     if (!domain.names) {
-      exit('Domain names field is missing!')
+      extras.exit('Domain names field is missing!')
     }
 
     // Skip if it's an IP address, doesn't need nginx config
-    if (regexp.ip.test(domain.names)) {
-      console.log('Found ip address, skipping...')
+    if (extras.regexp.ip.test(domain.names)) {
+      console.info('Found ip address, skipping...')
       continue
     }
 
     const names = domain.names.replace(/\s+/, ' ')
     const main = names.split(' ')[0]
 
-    console.log(`Processsing ${main}...`)
+    console.info(`Processsing ${main}...`)
 
     const certDir = main.replace(/\*\./g, '')
     const cert = domain.cert || `/etc/letsencrypt/live/${certDir}/fullchain.pem`
@@ -170,10 +162,10 @@ if (apptype == APPTYPES.web) {
     const nginxConf = util.nginxName(main, name)
 
     // Set up SSL certificate if it doesn't exist
-    if (ssl && !exist(cert)) {
+    if (ssl && !extras.exist(cert)) {
       // Need plain http to validate domain
-      write(nginxConf, template({ ssl: false }))
-      run(`systemctl restart nginx`)
+      extras.write(nginxConf, template({ ssl: false }))
+      extras.exec(`systemctl restart nginx`)
 
       const emailOption = config.email
         ? `--email ${config.email}`
@@ -187,77 +179,79 @@ if (apptype == APPTYPES.web) {
       const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${
         dryRun ? '--dry-run ' : ''
       }${emailOption} ${domainOption}`
-      console.log(certbotCommand)
+      console.info(certbotCommand)
 
       // Install certificate
-      run(certbotCommand)
+      extras.exec(certbotCommand)
     }
 
     // Write config based on preference
-    write(nginxConf, template({ ssl }))
+    extras.write(nginxConf, template({ ssl }))
   }
 
   if (basicauth) {
     const [user, password] = basicauth.split(':')
-    run(`htpasswd -b -c ${data}/.htpasswd ${user} ${password}`)
+    extras.exec(`htpasswd -b -c ${data}/.htpasswd ${user} ${password}`)
   }
 
   // Cron jobs
   const { jobs = [] } = config
   if (jobs.length) {
-    const existing = run(`crontab -l`).stdout.trim().split('\n')
+    const existing = extras.exec(`crontab -l`).split('\n')
     const all = [...new Set(existing.concat(jobs))].join('\n')
-    if (all) run(`echo "${all}" | crontab -`)
+    if (all) {
+      extras.exec(`echo "${all}" | crontab -`)
+    }
   }
 
   // Build sitemap
   if (config.sitemap && pkg.scripts?.sitemap) {
-    run(`npm run sitemap`)
+    extras.exec(`npm run sitemap`)
   }
 
   // Apply migrations
   if (pkg.scripts?.migrate) {
-    run(`npm run migrate`)
+    extras.exec(`npm run migrate`)
   }
 }
 
 // Move stuff into place
 process.chdir(`/root/apps/${name}`)
-run(`mv tmp ${revision}`)
+extras.exec(`mv tmp ${revision}`)
 
 // Record previous revision
-const prev = exist('current') ? fs.readlinkSync('current') : ''
+const prev = extras.exist('current') ? fs.readlinkSync('current') : ''
 
 // Symlink to new revision
-run(`ln -sfn ${revision} current`)
+extras.exec(`ln -sfn ${revision} current`)
 
 if (prev) {
-  console.log(`Removing previous revision ${prev}`)
-  rmdir(prev)
+  console.info(`Removing previous revision ${prev}`)
+  extras.exec(`rm -rf ${prev}`)
 }
 
 if (apptype == APPTYPES.web) {
   // Reload services
-  run(`systemctl daemon-reload`)
+  extras.exec(`systemctl daemon-reload`)
 
   // Restart nginx
-  run(`systemctl restart nginx`)
+  extras.exec(`systemctl restart nginx`)
 
   // Start app service if proxy
   if (proxy) {
-    run(`systemctl enable app@${name}`)
-    run(`systemctl restart app@${name}`)
+    extras.exec(`systemctl enable app@${name}`)
+    extras.exec(`systemctl restart app@${name}`)
   } else {
-    run(`systemctl stop app@${name}`)
-    run(`systemctl disable app@${name}`)
+    extras.exec(`systemctl stop app@${name}`)
+    extras.exec(`systemctl disable app@${name}`)
   }
 
   process.chdir(`/root/apps/${name}/current`)
 
   // Ping servers
   if (config.ping && pkg.scripts?.ping) {
-    run(`npm run ping`)
+    extras.exec(`npm run ping`)
   }
 }
 
-console.log('\nDeployed.\n')
+console.info('\nDeployed.\n')

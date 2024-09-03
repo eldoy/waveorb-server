@@ -1,7 +1,7 @@
-const { run } = require('extras')
+const extras = require('extras')
 
-run(`git reset --hard`)
-run(`git pull`)
-run(`npm i`)
-run(`apt-get update && apt-get upgrade -y`)
-run(`npm i -g npm`)
+extras.exec(`git reset --hard`)
+extras.exec(`git pull`)
+extras.exec(`npm i`)
+extras.exec(`apt-get update && apt-get upgrade -y`)
+extras.exec(`npm i -g npm`)
