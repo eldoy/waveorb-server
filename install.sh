@@ -95,6 +95,9 @@ cp $base/.zshrc $HOME
 cd $HOME/waveorb-server && npm i
 cd $HOME
 
+# Load zsh through ssh
+echo 'source .zshrc' > .zshenv
+
 # Enable and start services
 systemctl daemon-reload
 
