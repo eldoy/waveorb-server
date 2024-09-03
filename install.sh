@@ -1,5 +1,6 @@
 # Change the welcome message
 printf 'ᚠᚢᚦᚬᚱᚴᚼᚾᛁᛅᛦᛋᛏᛒᛘᛚ\n' > /etc/motd
+chmod -x /etc/update-motd.d/*
 
 # Set environment
 echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
