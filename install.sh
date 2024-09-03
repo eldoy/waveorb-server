@@ -7,7 +7,7 @@ echo 'EDITOR=vim' >> /etc/environment
 echo 'NODE_ENV=production' >> /etc/environment
 
 # Remove restart package
-until apt-get -y remove needrestart; do sleep 1; done
+until apt-get -y remove needrestart command-not-found; do sleep 1; done
 
 # Install swap file
 fallocate -l 4G /swapfile
@@ -69,8 +69,10 @@ until apt-get install -y zsh; do sleep 1; done
 chsh -s /usr/bin/zsh root
 
 # Install NodeJS
-curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-until apt-get install -y nodejs; do sleep 1; done
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install 20
 
 # Update npm
 npm install -g npm
