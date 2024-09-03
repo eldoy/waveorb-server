@@ -6,8 +6,8 @@ echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
 echo 'EDITOR=vim' >> /etc/environment
 echo 'NODE_ENV=production' >> /etc/environment
 
-# Disable interactive restart
-sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+# Remove restart package
+until apt-get -y remove needrestart; do sleep 1; done
 
 # Install swap file
 fallocate -l 4G /swapfile
