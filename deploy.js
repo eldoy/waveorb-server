@@ -12,7 +12,7 @@ const repo = process.argv[2]
 if (!repo) {
   extras.exit(`Repository URL is missing!`)
 }
-console.info(`Deploying repository ${repo}`)
+console.log(`Deploying repository ${repo}`)
 
 // Extract name
 let name = process.argv[3]
@@ -50,7 +50,7 @@ if (mode) {
 
 const revision = extras.exec('git rev-parse --short HEAD', { silent: true })
 const branch = extras.exec(`git rev-parse --abbrev-ref HEAD`, { silent: true })
-console.info(`Revision ${revision} on ${branch} branch`)
+console.log(`Revision ${revision} on ${branch} branch`)
 
 // Fail if revision already exists
 if (extras.exist(`/root/apps/${name}/${revision}`)) {
@@ -62,8 +62,8 @@ if (extras.exist(`/root/apps/${name}/${revision}`)) {
 // Find waveorb config file
 const config = extras.env('waveorb.json', mode)
 
-console.info(`Using config:`)
-console.info(config)
+console.log(`Using config:`)
+console.log(config)
 
 if (!config.domains || !config.domains.length) {
   extras.exit('Config domains field is missing!')
@@ -84,12 +84,12 @@ if (typeof config.domains == 'string') {
 }
 
 // Install packages
-console.info('Installing npm packages...')
+console.log('Installing npm packages...')
 extras.exec(`npm i --omit=dev`)
 
 // Build
 if (pkg.scripts?.build) {
-  console.info('Building app...')
+  console.log('Building app...')
   extras.exec(`npm run build`)
 }
 
@@ -126,14 +126,14 @@ if (apptype == APPTYPES.web) {
 
     // Skip if it's an IP address, doesn't need nginx config
     if (extras.regexp.ip.test(domain.names)) {
-      console.info('Found ip address, skipping...')
+      console.log('Found ip address, skipping...')
       continue
     }
 
     const names = domain.names.replace(/\s+/, ' ')
     const main = names.split(' ')[0]
 
-    console.info(`Processsing ${main}...`)
+    console.log(`Processsing ${main}...`)
 
     const certDir = main.replace(/\*\./g, '')
     const cert = domain.cert || `/etc/letsencrypt/live/${certDir}/fullchain.pem`
@@ -179,7 +179,7 @@ if (apptype == APPTYPES.web) {
       const certbotCommand = `certbot certonly --nginx --agree-tos --no-eff-email ${
         dryRun ? '--dry-run ' : ''
       }${emailOption} ${domainOption}`
-      console.info(certbotCommand)
+      console.log(certbotCommand)
 
       // Install certificate
       extras.exec(certbotCommand)
@@ -226,7 +226,7 @@ const prev = extras.exist('current') ? fs.readlinkSync('current') : ''
 extras.exec(`ln -sfn ${revision} current`)
 
 if (prev) {
-  console.info(`Removing previous revision ${prev}`)
+  console.log(`Removing previous revision ${prev}`)
   extras.exec(`rm -rf ${prev}`)
 }
 
@@ -254,4 +254,4 @@ if (apptype == APPTYPES.web) {
   }
 }
 
-console.info('\nDeployed.\n')
+console.log('\nDeployed.\n')
