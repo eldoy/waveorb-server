@@ -32,7 +32,7 @@ extras.exec(`mkdir -p apps/${name}/data`)
 extras.exec(`mkdir -p apps/${name}/log`)
 
 process.chdir(`/root/apps/${name}`)
-extras.exec(`rm -rf ${tmp}`)
+extras.exec(`rm -rf tmp`)
 
 const remote = from ? ` --branch ${from}` : ''
 extras.exec(`git clone ${repo} --depth 1${remote} tmp`)
