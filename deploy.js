@@ -48,8 +48,8 @@ if (mode) {
   extras.write('.env', mode)
 }
 
-const revision = extras.exec('git rev-parse --short HEAD', { silent: true })
-const branch = extras.exec(`git rev-parse --abbrev-ref HEAD`, { silent: true })
+const revision = extras.capture(`git rev-parse --short HEAD`)
+const branch = extras.capture(`git rev-parse --abbrev-ref HEAD`)
 console.log(`Revision ${revision} on ${branch} branch`)
 
 // Fail if revision already exists
@@ -197,7 +197,7 @@ if (apptype == APPTYPES.web) {
   // Cron jobs
   const { jobs = [] } = config
   if (jobs.length) {
-    const existing = extras.exec(`crontab -l`).split('\n')
+    const existing = extras.capture(`crontab -l`).split('\n')
     const all = [...new Set(existing.concat(jobs))].join('\n')
     if (all) {
       extras.exec(`echo "${all}" | crontab -`)
